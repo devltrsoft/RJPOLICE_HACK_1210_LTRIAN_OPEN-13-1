@@ -1,0 +1,375 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="410dp"
+    android:layout_height="wrap_content"
+    tools:layout_editor_absoluteX="1dp"
+    tools:layout_editor_absoluteY="1dp"
+    android:fillViewport="true"
+    android:background="#EBFCFB">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="50dp">
+            <ImageView
+                android:id="@+id/back"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="15dp"
+                />
+
+            <ImageView
+                android:id="@+id/edit"
+                android:layout_width="23dp"
+                android:layout_height="23dp"
+                android:layout_marginTop="15dp"
+                android:layout_marginLeft="300dp"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <ImageView
+                android:id="@+id/Profile_pic"
+                android:layout_width="200dp"
+                android:layout_marginLeft="30dp"
+                android:background="@drawable/man"
+                android:layout_height="200dp"
+                android:layout_marginTop="10dp"
+                >
+            </ImageView>
+
+            <TextView
+                android:id="@+id/cidno"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="left"
+                android:layout_marginTop="70dp"
+                android:text="witness page"
+                android:textColor="@color/black"
+                android:textSize="40dp"
+                android:textStyle="bold"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:text="First Name:"
+                android:textSize="19dp" />
+
+            <TextView
+                android:id="@+id/fname"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="49dp"
+                android:paddingLeft="15dp"
+                android:layout_marginTop="30dp"/>
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:text="Middle Name:"
+                android:textSize="19dp" />
+
+            <TextView
+                android:id="@+id/mname"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="26dp"
+                android:paddingLeft="15dp"
+                android:layout_marginTop="30dp" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:text="Last Name:"
+                android:textSize="19dp" />
+
+            <TextView
+                android:id="@+id/lname"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="48dp"
+                android:paddingLeft="15dp"
+                android:layout_marginTop="30dp" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:text="Address:"
+                android:textSize="19dp" />
+
+            <TextView
+                android:id="@+id/address"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:paddingLeft="15dp"
+                android:layout_marginLeft="70dp"
+                android:layout_marginTop="30dp" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:text="DOB:"
+                android:textSize="19dp" />
+
+            <TextView
+                android:id="@+id/dob"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="102dp"
+                android:inputType="datetime"
+                android:paddingLeft="15dp"
+                android:hint="dd/mm/yyyy"
+                android:layout_marginTop="30dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:text="Gender:"
+                android:textSize="19dp" />
+
+            <TextView
+                android:id="@+id/gender"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="56dp"
+                android:paddingLeft="15dp"
+                android:layout_marginTop="10dp"
+                android:inputType="number" />
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:text="Mobile No:"
+                android:textSize="19dp" />
+
+            <TextView
+                android:id="@+id/mobile"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="56dp"
+                android:paddingLeft="15dp"
+                android:layout_marginTop="30dp"
+                android:inputType="number" />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:text="Email:"
+                android:textSize="19dp" />
+
+            <TextView
+                android:id="@+id/email"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:paddingLeft="15dp"
+                android:layout_marginLeft="96dp"
+                android:layout_marginTop="30dp"
+                android:inputType="textEmailAddress" />
+        </LinearLayout>
+
+
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:text="Adhaar No:"
+                android:textSize="19dp" />
+
+            <TextView
+                android:id="@+id/addhar"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="48dp"
+                android:paddingLeft="15dp"
+                android:layout_marginTop="30dp"
+                android:inputType="number"
+                />
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:text="Country Name:"
+                android:textSize="19dp" />
+
+            <TextView
+                android:id="@+id/country"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:paddingLeft="15dp"
+                android:layout_marginLeft="13dp"
+                android:layout_marginTop="30dp"
+                android:inputType="text"
+                />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:text="State Name:"
+                android:textSize="19dp" />
+
+            <TextView
+                android:id="@+id/state"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="38dp"
+                android:paddingLeft="15dp"
+                android:layout_marginTop="30dp"
+                android:inputType="text"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:text="District Name:"
+                android:textSize="19dp" />
+
+            <TextView
+                android:id="@+id/district"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="38dp"
+                android:paddingLeft="15dp"
+                android:layout_marginTop="30dp"
+                android:inputType="text"
+                />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginTop="30dp"
+                android:text="City Name:"
+                android:textSize="19dp" />
+
+
+            <TextView
+                android:id="@+id/city"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="30dp"
+                android:paddingLeft="15dp"
+                android:inputType="text"
+                />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content">
+
+
+
+
+            <Button
+                android:id="@+id/ctn"
+                android:layout_width="200dp"
+                android:layout_height="60dp"
+                android:layout_marginLeft="50dp"
+                android:layout_marginTop="30dp"
+                android:paddingLeft="15dp"
+                android:text="Download PDF"
+                />
+        </LinearLayout>
+
+    </LinearLayout>
+</ScrollView>

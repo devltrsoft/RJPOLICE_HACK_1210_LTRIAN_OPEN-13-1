@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginTop="70dp"
+
+    android:background="#EBFCFB">
+
+
+    <EditText
+        android:id="@+id/commentInput"
+        android:layout_width="380dp"
+        android:layout_height="wrap_content"
+        android:layout_alignParentStart="true"
+        android:layout_alignParentEnd="true"
+        android:layout_marginStart="13dp"
+        android:layout_marginEnd="18dp"
+        android:background="@drawable/settting_border"
+        android:gravity="center"
+        android:hint="Add a comment..."
+        android:padding="16dp" />
+
+    <androidx.appcompat.widget.AppCompatButton
+        android:id="@+id/addCommentButton"
+        android:layout_width="150dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/commentInput"
+        android:layout_alignParentRight="true"
+        android:layout_marginRight="10dp"
+        android:text="Add Comment"/>
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/commentRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/addCommentButton"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp"/>
+</RelativeLayout>

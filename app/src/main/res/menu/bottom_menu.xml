@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:id="@+id/ecall"
+        android:icon="@drawable/calladd"
+        android:title="" />
+
+    <item
+        android:id="@+id/ecomplaint"
+        android:icon="@drawable/botcomplainticon"
+        android:title="" />
+
+    <item
+        android:id="@+id/eadd"
+        android:enabled="false"
+        android:title="" />
+
+    <item
+        android:id="@+id/enews"
+        android:icon="@drawable/newsb"
+        android:title="" />
+
+    <item
+        android:id="@+id/emassge"
+        android:icon="@drawable/chatbot"
+        android:title="" />
+
+</menu>

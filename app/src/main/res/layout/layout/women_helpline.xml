@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".Add_Investigation.Add_Investigation">
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/Suspect_card"
+                android:layout_width="350dp"
+                android:layout_height="50dp"
+                android:layout_below="@+id/button"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="30dp">
+
+                <ImageView
+                    android:id="@+id/Suspect_View"
+                    android:layout_width="25dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="300dp"
+
+                    android:layout_marginTop="5dp"
+                    app:srcCompat="@drawable/down_arrow" />
+
+                <TextView
+                    android:layout_width="350dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Suspect Details"
+                    android:textSize="25dp" />
+
+            </androidx.cardview.widget.CardView>
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/suspect_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                android:visibility="gone"
+                android:layout_below="@+id/Suspect_card" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/victim_card"
+                android:layout_width="350dp"
+                android:layout_height="50dp"
+                android:layout_below="@+id/Suspect_card"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="90dp">
+
+                <ImageView
+                    android:id="@+id/victim_view"
+                    android:layout_width="25dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="300dp"
+
+                    android:layout_marginTop="5dp"
+                    app:srcCompat="@drawable/down_arrow" />
+
+                <TextView
+                    android:layout_width="350dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Victim Details"
+                    android:textSize="25dp" />
+
+            </androidx.cardview.widget.CardView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/victim_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                android:visibility="gone"
+                android:layout_below="@+id/victim_card" />
+        </LinearLayout>
+
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+
+
+            <androidx.cardview.widget.CardView
+                android:id="@+id/witness_card"
+                android:layout_width="350dp"
+                android:layout_height="50dp"
+                android:layout_below="@+id/Suspect_card"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="150dp">
+
+                <ImageView
+                    android:id="@+id/Witness_view"
+                    android:layout_width="25dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="300dp"
+
+                    android:layout_marginTop="5dp"
+                    app:srcCompat="@drawable/down_arrow" />
+
+                <TextView
+                    android:layout_width="350dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Witness Details"
+                    android:textSize="25dp" />
+
+            </androidx.cardview.widget.CardView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/Witness_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                android:visibility="gone"
+                android:layout_below="@+id/victim_card" />
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            >
+            <androidx.cardview.widget.CardView
+                android:id="@+id/Evidance_card"
+                android:layout_width="350dp"
+                android:layout_height="50dp"
+                android:layout_below="@+id/witness_card"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="210dp">
+
+                <ImageView
+                    android:id="@+id/Evidance_view"
+                    android:layout_width="25dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="300dp"
+
+                    android:layout_marginTop="5dp"
+                    app:srcCompat="@drawable/down_arrow" />
+
+                <TextView
+                    android:layout_width="350dp"
+                    android:layout_height="50dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginTop="10dp"
+                    android:text="Evidance Details"
+                    android:textSize="25dp" />
+
+            </androidx.cardview.widget.CardView>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/Evidance_recycler"
+                android:layout_width="match_parent"
+                android:layout_height="500dp"
+                android:visibility="gone"
+                android:layout_below="@+id/Evidance_card" />
+
+
+
+            <LinearLayout
+                android:id="@+id/Additional_Details"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical"
+                ></LinearLayout>
+
+
+
+
+        </LinearLayout>
+
+
+    </FrameLayout>
+
+</ScrollView>
