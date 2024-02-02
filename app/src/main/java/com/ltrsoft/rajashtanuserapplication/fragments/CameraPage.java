@@ -35,6 +35,11 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
+import com.ltrsoft.rajashtanuserapplication.classes.Camera;
+import com.ltrsoft.rajashtanuserapplication.interfaces.UserCallBack;
+import com.ltrsoft.rajashtanuserapplication.model.CameraDao;
+import com.ltrsoft.rajashtanuserapplication.utils.UserDataAccess;
+
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -86,24 +91,9 @@ public class CameraPage extends Fragment {
         if (actionBar != null) {
             actionBar.setTitle("Upload Image ");
         }
-        try {
-            FileInputStream fileInputStream = getActivity().openFileInput("mytextfile.txt");
-            InputStreamReader inputReader = new InputStreamReader(fileInputStream);
-            char[] buffer = new char[1024];
-            int read;
-            while ((read = inputReader.read(buffer)) > 0) {
-                output.append(buffer, 0, read);
-            }
-         //   Toast.makeText(getContext(), "your fiile ="+output.toString(), Toast.LENGTH_SHORT).show();
 
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        requestQueue = Volley.newRequestQueue(getContext());
         loadSattion();
-        Bundle bundle=getArguments();
-//        useid = bundle.getString("userId");
-        useid = "1";
+
 
         camera.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -120,30 +110,31 @@ public class CameraPage extends Fragment {
                 startActivityForResult(intent, REQUEST_IMAGE_GET);
             }
         });
+
+
+
+        station.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                statinId=String.valueOf(i);
+            }
+
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                statinId = String.valueOf(0);
+            }
+        });
         submit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 String desc =img_desc.getText().toString();
                 String address =imgage_adress.getText().toString();
-
-              station.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
-                  @Override
-                  public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                      statinId=String.valueOf(i);
-                  }
-
-                  @Override
-                  public void onNothingSelected(AdapterView<?> adapterView) {
-                    statinId = String.valueOf(0);
-                  }
-              });
                 if (encodeImage!=null){
                     sendData(desc,address,encodeImage,useid,statinId);
                 }
                 else {
                     Toast.makeText(getContext(), "select image first", Toast.LENGTH_SHORT).show();
                 }
-
             }
         });
         return view;
@@ -151,6 +142,21 @@ public class CameraPage extends Fragment {
 
     private void sendData(String desc, String address, String encodeImage, String useid, String statinId) {
         if (desc != null && address != null && encodeImage != null && useid != null ) {
+
+            CameraDao cameraDao = new CameraDao(getContext());
+            Camera camera = new Camera((new UserDataAccess().getUserId(getActivity()).toString()),encodeImage,statinId,desc,address);
+            cameraDao.createCamera(camera, new UserCallBack() {
+                @Override
+                public void userSuccess(Object object) {
+                    Toast.makeText(getContext(), "resposne = "+(String) object, Toast.LENGTH_SHORT).show();
+                }
+
+                @Override
+                public void userError(String error) {
+                    Toast.makeText(getContext(), "error = "+error.toString(), Toast.LENGTH_SHORT).show();
+                }
+            });
+
 
             StringRequest request = new StringRequest(Request.Method.POST, IMAGE_UPLOAD_URL, new Response.Listener<String>() {
                 @Override
@@ -179,12 +185,11 @@ public class CameraPage extends Fragment {
                     map.put("description", desc);
                     map.put("address", address);
                     map.put("user_id", output.toString());
-//                    map.put("station_id", statinId);
                     map.put("station_id", "1");
                     return map;
                 }
             };
-            requestQueue.add(request);
+//            requestQueue.add(request);
         }
         else {
             Log.d("values img",encodeImage);
@@ -276,6 +281,7 @@ public class CameraPage extends Fragment {
                 return super.getParams();
             }
         };
+        requestQueue = Volley.newRequestQueue(getContext());
         requestQueue.add(request);
     }
 }

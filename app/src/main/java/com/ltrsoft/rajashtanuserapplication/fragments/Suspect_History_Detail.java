@@ -30,8 +30,12 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.ltrsoft.rajashtanuserapplication.R;
+import com.ltrsoft.rajashtanuserapplication.classes.SuspectClass;
+import com.ltrsoft.rajashtanuserapplication.interfaces.UserCallBack;
+import com.ltrsoft.rajashtanuserapplication.model.SuspectDeo;
 
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 
 public class Suspect_History_Detail extends Fragment {
     private static final int REQUESTCODE =10000 ;
@@ -53,7 +57,6 @@ public class Suspect_History_Detail extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view= inflater.inflate(R.layout.suspect__history__detail, container, false);
-
         sid=view.findViewById(R.id.suspect_name);
         suspect_addhar=view.findViewById(R.id.suspect_addhar);
         Suspect_full_name=view.findViewById(R.id.Suspect_full_name);
@@ -79,21 +82,32 @@ public class Suspect_History_Detail extends Fragment {
             actionBar.setTitle(" Suspect ");
         }
         Bundle bundle = getArguments();
-        sid.setText(bundle.getString("cid"));
-        suspect_dob.setText(bundle.getString("date"));
-        Suspect_full_name.setText(bundle.getString("name"));
-        // suspect_address.setText(bundle.getString(""));
-        suspect_gender.setText(bundle.getString("gender"));
-        suspect_mobile.setText(bundle.getString("mobile"));
-        suspect_email.setText(bundle.getString("email"));
-        suspect_country.setText(bundle.getString("cname"));
-        suspect_district.setText(bundle.getString("dname"));
-        suspect_state.setText(bundle.getString("sname"));
-        suspect_city.setText(bundle.getString("cname"));
-
-
-
-        sev.setOnClickListener(new View.OnClickListener() {
+        String suspect_id = String.valueOf(bundle.getInt("cid"));
+        SuspectDeo suspectDeo = new SuspectDeo();
+        suspectDeo.getSuspect(suspect_id, getContext(), new UserCallBack() {
+            @Override
+            public void userSuccess(Object object) {
+                ArrayList<SuspectClass>list = (ArrayList<SuspectClass>) object;
+                for (int i = 0 ; i < list.size() ; i++){
+                    SuspectClass suspectClass = list.get(i);
+                    suspect_dob.setText(suspectClass.getDob());
+                    Suspect_full_name.setText(suspectClass.getFname());
+                    suspect_address.setText(suspectClass.getStname());
+                    suspect_gender.setText(suspectClass.getGender());
+                    suspect_mobile.setText(suspectClass.getMobile());
+                    suspect_email.setText(suspectClass.getEmail());
+                    suspect_country.setText(suspectClass.getCountyname());
+                    suspect_district.setText(suspectClass.getDistname());
+                    suspect_state.setText(suspectClass.getStname());
+                    suspect_city.setText(suspectClass.getCityname());
+                }
+            }
+            @Override
+            public void userError(String error) {
+                Toast.makeText(getContext(), "error "+error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+      sev.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 createPdf();

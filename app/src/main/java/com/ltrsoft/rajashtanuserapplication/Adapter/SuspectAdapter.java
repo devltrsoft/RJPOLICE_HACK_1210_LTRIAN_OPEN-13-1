@@ -49,15 +49,15 @@ public class SuspectAdapter extends RecyclerView.Adapter<SuspectAdapter.ViewHold
                 Bundle bundle=new Bundle();
                 Suspect_History_Detail s=new Suspect_History_Detail();
                 AppCompatActivity activity=(AppCompatActivity)v.getContext();
-                bundle.putInt("cid", suspectClass.getId());
-                bundle.putString("name", suspectClass.getFname());
-                bundle.putString("gender",suspectClass.getGender());
-              bundle.putString("mobile",suspectClass.getMobile());
-                bundle.putString("email",suspectClass.getEmail());
-                bundle.putString("adhar",suspectClass.getAdharno());
-                bundle.putString("cname",suspectClass.getCountyname());
-                bundle.putString("dname",suspectClass.getDistname());
-                bundle.putString("sname",suspectClass.getStname());
+                bundle.putInt("cid", suspectClass.getSuspectid());
+//                bundle.putString("name", suspectClass.getFname());
+//                bundle.putString("gender",suspectClass.getGender());
+//              bundle.putString("mobile",suspectClass.getMobile());
+//                bundle.putString("email",suspectClass.getEmail());
+//                bundle.putString("adhar",suspectClass.getAdharno());
+//                bundle.putString("cname",suspectClass.getCountyname());
+//                bundle.putString("dname",suspectClass.getDistname());
+//                bundle.putString("sname",suspectClass.getStname());
                 s.setArguments(bundle);
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.containermain, s
                 ).addToBackStack(null).commit();

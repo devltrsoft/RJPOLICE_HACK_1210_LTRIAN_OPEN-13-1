@@ -116,7 +116,7 @@ public class DashBoard extends Fragment implements OnMapReadyCallback{
                 } else if (id == R.id.emassge) {
                     item.setCheckable(true);
                     //Toast.makeText(getContext(), "Message clicked", Toast.LENGTH_SHORT).show();
-                    Message_fragment message = new Message_fragment();
+                    ChatBot message = new ChatBot();
                     loadfragment(message);
                 }
                 return true;

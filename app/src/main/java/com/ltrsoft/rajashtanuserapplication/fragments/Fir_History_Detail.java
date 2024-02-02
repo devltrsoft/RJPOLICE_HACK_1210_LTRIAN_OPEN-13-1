@@ -30,6 +30,9 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.ltrsoft.rajashtanuserapplication.R;
+import com.ltrsoft.rajashtanuserapplication.classes.FirClass;
+import com.ltrsoft.rajashtanuserapplication.interfaces.UserCallBack;
+import com.ltrsoft.rajashtanuserapplication.model.Firdeo;
 
 import java.io.FileOutputStream;
 
@@ -68,15 +71,29 @@ public class Fir_History_Detail extends Fragment {
         t8 = view.findViewById(R.id.evidance);
         t9 = view.findViewById(R.id.status);
         Bundle bundle = getArguments();
-        t1.setText(bundle.getString("fired"));
-        t3.setText(bundle.getString("suspect"));
-        t2.setText(bundle.getString("complain_name"));
-        t4.setText(bundle.getString("complaintOFir_name"));
-        t5.setText(bundle.getString("status_name"));
-        t6.setText(bundle.getString("suspect_address"));
-        t7.setText(bundle.getString("investigation_witness_fname"));
-        t8.setText(bundle.getString("victim_fname"));
-        t9.setText(bundle.getString("suspect_fname"));
+        String  fir_id = bundle.getString("fired");
+        Firdeo firdeo = new Firdeo();
+        firdeo.getFir(fir_id, getContext(), new UserCallBack() {
+            @Override
+            public void userSuccess(Object object) {
+                FirClass firClass = (FirClass)object;
+                t3.setText(bundle.getString("suspect"));
+               t2.setText(bundle.getString("complain_name"));
+               t2.setText(firClass.getComplaint_subject());
+             t4.setText(bundle.getString("complaintOFir_name"));
+             t4.setText(firClass.getComplaintORfir_name());
+             t5.setText(firClass.getStatus_name());
+             t6.setText(firClass.getSuspect_address());
+             t7.setText(firClass.getInvestigation_witness_fname());
+            t8.setText(firClass.getVictim_fname());
+            t9.setText(firClass.getSuspect_fname());
+            }
+
+            @Override
+            public void userError(String error) {
+                Toast.makeText(getContext(), "some error while loading fir", Toast.LENGTH_SHORT).show();
+            }
+        });
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,13 +102,8 @@ public class Fir_History_Detail extends Fragment {
                 createPdf();
             }
         });
-
-        // Other code...
-
-
-        return view;
+     return view;
     }
-
     private void createPdf() {
         Document document = new Document();
 
@@ -136,55 +148,4 @@ public class Fir_History_Detail extends Fragment {
         }
 
     }
-
-//    private void sendNotification(String string) {
-//        Bitmap largeIcon =getBitMap(ResourcesCompat.getDrawable(getResources(),R.mipmap.images,null));
-//        Notification.BigPictureStyle bigPictureStyle = new Notification.BigPictureStyle()
-//                .bigPicture(largeIcon)
-//                .bigLargeIcon(largeIcon)
-//                .setSummaryText("File created at "+string)
-//                .setBigContentTitle("Pdf craeted");
-//
-//        NotificationManager nm = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
-//        Notification notification;
-//        Intent intent = new Intent(Intent.ACTION_VIEW);
-//        intent.setDataAndType(Uri.parse(string), "application/pdf");
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        PendingIntent pi = PendingIntent.getActivity(getContext(),REQUESTCODE,intent,PendingIntent.FLAG_UPDATE_CURRENT| PendingIntent.FLAG_IMMUTABLE);
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            nm.createNotificationChannel(new NotificationChannel(CHANNELID,"my channel",NotificationManager.IMPORTANCE_HIGH));
-//            notification = new Notification.Builder(getContext())
-//                    .setLargeIcon(largeIcon)
-//                    .setSmallIcon(R.mipmap.images)
-//                    .setContentText("new messege ")
-//                    .setStyle(bigPictureStyle)
-//                    .setContentIntent(pi)
-//                    .setSubText("new messege from ")
-//                    .setChannelId(CHANNELID)
-//                    .build();
-//            nm.notify(NOTIFICATIONID,notification);
-//            //set.setText("success");
-//            // nm.createNotificationChannel(new NotificationChannel(CHANNELID,"my channel",NotificationManager.IMPORTANCE_HIGH));
-//        }
-//        else {
-//            notification = new Notification.Builder(getContext())
-//                    .setLargeIcon(largeIcon)
-//                    .setSmallIcon(R.mipmap.images)
-//                    .setContentText("new messege ")
-//                    .setContentIntent(pi)
-//                    .setStyle(bigPictureStyle)
-//                    .setSubText("new messege from ")
-//                    .build();
-//            nm.notify(NOTIFICATIONID,notification);
-//        }
-//    }
-//
-//    public Bitmap getBitMap(Drawable drawable){
-//
-//        BitmapDrawable bitmapDrawable = (BitmapDrawable)drawable;
-//        Bitmap largeIcon = bitmapDrawable.getBitmap();
-//        return largeIcon;
-//    }
-
 }

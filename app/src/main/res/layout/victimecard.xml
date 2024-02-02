@@ -8,9 +8,6 @@
     app:cardBackgroundColor="#E2E9FC"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     >
-
-
-
     <TextView
         android:id="@+id/idd"
         android:layout_width="wrap_content"

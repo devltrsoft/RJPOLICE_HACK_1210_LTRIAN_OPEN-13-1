@@ -1,49 +1,36 @@
 package com.ltrsoft.rajashtanuserapplication.Adapter;
-
-import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
-
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.android.volley.RequestQueue;
-import com.android.volley.toolbox.ImageLoader;
 import com.ltrsoft.rajashtanuserapplication.R;
-import com.ltrsoft.rajashtanuserapplication.classes.EvidenceClass;
-
+import com.ltrsoft.rajashtanuserapplication.classes.Complaint_Photo;
 import java.util.List;
 
 public class EvidenceAdapter extends RecyclerView.Adapter<EvidenceAdapter.ViewHolder> {
-    private Context context;
-    private List<EvidenceClass> items;
-    private RequestQueue requestQueue;
-    private ImageLoader imageLoader;
+    private List<Complaint_Photo> items;
 
-    public EvidenceAdapter(Context context, List<EvidenceClass> items, RequestQueue requestQueue) {
-        this.context = context;
+    public EvidenceAdapter(List<Complaint_Photo> items) {
         this.items = items;
-        this.requestQueue = this.requestQueue;
+
     }
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.evidencecard, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.evidencecard, parent, false);
         return new ViewHolder(view);
     }
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        EvidenceClass item = items.get(position);
+        Complaint_Photo item = items.get(position);
         int i=position;
-
-       holder.textView.setText(item.getId());
+       holder.textView.setText(item.getComplaint_photo_id());
        holder.imageView.setImageResource(R.drawable.evidenc3);
 //        String imageUrl = item.getImagerl();
 //        Picasso.get().load(imageUrl).into(holder.imageView);
-
     }
 
     @Override

@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -36,6 +37,7 @@ public class FirPage extends Fragment {
 
     private RecyclerView recyclerView;
     ArrayList<FirClass> list ;
+    TextView textView ;
     public final static String FIR_URL = "https://rj.ltr-soft.com/public/police_api/investigation/investigation_detail.php";
 
     @Override
@@ -43,7 +45,7 @@ public class FirPage extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fir_page, container, false);
         recyclerView = view.findViewById(R.id.firrecycleview);
-
+        textView = view.findViewById(R.id.firtv);
 
 //        if (!list.isEmpty()){
 //            list.clear();
@@ -52,64 +54,32 @@ public class FirPage extends Fragment {
 
         Firdeo firdeo = new Firdeo();
         UserDataAccess userDataAccess = new UserDataAccess();
+        System.out.println("userid"+userDataAccess.getUserId(getActivity()));
         firdeo.getAllFir(userDataAccess.getUserId(getActivity()), getContext(), new UserCallBack() {
             @Override
             public void userSuccess(Object object) {
                 list = (ArrayList<FirClass>)object;
-                FirAdpter adapter = new FirAdpter(list);
-                LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-                recyclerView.setLayoutManager(layoutManager);
-                recyclerView.setAdapter(adapter);
+                if (list!=null) {
+                    FirAdpter adapter = new FirAdpter(list);
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+                    recyclerView.setLayoutManager(layoutManager);
+                    recyclerView.setAdapter(adapter);
+                }
+                else {
+                    Toast.makeText(getContext(), "You have No Fir", Toast.LENGTH_SHORT).show();
+                    recyclerView.setVisibility(View.GONE);
+                    textView.setVisibility(View.VISIBLE);
+                    textView.setText("You have no fir registered");
+                }
             }
-
             @Override
             public void userError(String error) {
                 Toast.makeText(getContext(), "Error"+error.toString(), Toast.LENGTH_SHORT).show();
+                recyclerView.setVisibility(View.GONE);
+                textView.setVisibility(View.VISIBLE);
+                textView.setText("Error While Loading FIR ");
             }
         });
-
-//        JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, FIR_URL, null, new Response.Listener<JSONArray>() {
-//            @Override
-//            public void onResponse(JSONArray response) {
-//                // Toast.makeText(getContext(), "response"+response, Toast.LENGTH_SHORT).show();
-////                for (int i = 0; i < response.length(); i++) {
-//                for (int i = 0; i < 3; i++) {
-//                    try {
-//
-//                        JSONObject jsonObject = response.getJSONObject(i);
-//                        String fir_id = jsonObject.getString("fir_id");
-//                        String fir_subject = jsonObject.getString("complaint_description");
-//                        String fir_type_name = jsonObject.getString("incedant_reporting");
-//                        String status_name = jsonObject.getString("status_name");
-//                        String fir_date = jsonObject.getString("incident_date");
-//                        String firplace = jsonObject.getString("user_address");
-//                        String wname = jsonObject.getString("investigation_witness_fname");
-//                        String vname = jsonObject.getString("victim_fname");
-//                        String sname = jsonObject.getString("suspect_fname");
-//                        String evidence = jsonObject.getString("evidance_property");
-//
-//                    } catch (JSONException e) {
-//                        Toast.makeText(getContext(), "json exception", Toast.LENGTH_SHORT).show();
-//                        throw new RuntimeException(e);
-//                    }
-//                }
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Toast.makeText(getContext(), "error response = " + error.toString(), Toast.LENGTH_SHORT).show();
-//            }
-//            protected Map<String, String> getParams() throws AuthFailureError {
-//                Map<String, String> params = new HashMap<>();
-//                params.put("fir_id", "2023-12-14-1");
-//                return params;
-//            }
-//        });
-//        RequestQueue queue = Volley.newRequestQueue(getContext());
-//        queue.add(request);
         return view;
 }
 }
-
-// list.add(new FirClass(fir_id, fir_subject, fir_type_name, fir_date, status_name,sname,wname,vname));
-

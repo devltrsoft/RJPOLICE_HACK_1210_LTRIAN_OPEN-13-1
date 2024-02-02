@@ -44,8 +44,10 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.ltrsoft.rajashtanuserapplication.R;
+import com.ltrsoft.rajashtanuserapplication.classes.ComplaintClass;
 import com.ltrsoft.rajashtanuserapplication.classes.SuspectClass;
 import com.ltrsoft.rajashtanuserapplication.interfaces.UserCallBack;
+import com.ltrsoft.rajashtanuserapplication.model.Complaintdeo;
 import com.ltrsoft.rajashtanuserapplication.model.SuspectDeo;
 import com.ltrsoft.rajashtanuserapplication.utils.UserDataAccess;
 
@@ -55,10 +57,8 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.ByteArrayOutputStream;
-import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
@@ -66,7 +66,7 @@ import java.util.List;
 import java.util.Map;
 
 public class AddSuspect extends Fragment {
-private String encodeImage;
+private String encodeImage ="";
     private final int CAMERA_REQ_CODE = 104;
     StringBuilder output = new StringBuilder();
     private final int GALLERY_REQ_CODE = 105;
@@ -88,19 +88,19 @@ private String encodeImage;
     HashMap <Integer,String> statecode=new HashMap<>();
     HashMap <Integer,String> districtcode=new HashMap<>();
     HashMap <Integer,String> citycode=new HashMap<>();
+    HashMap <Integer,String> cmp_id =new HashMap<>();
 
     public static  final String URL1 ="https://rj.ltr-soft.com/public/police_api/country/select_country.php ";
     public static  final String URL2 ="https://rj.ltr-soft.com/public/police_api/state/select_state.php";
     public static  final String URL3 ="https://rj.ltr-soft.com/public/police_api/district/select_district.php";
     public static  final String URL4 ="https://rj.ltr-soft.com/public/police_api/city/select_city.php";
 
-
+    public String comp_id;
     private static  String COMPLAIN_NAME_EBY_USER = "https://rj.ltr-soft.com/public/police_api/data/complaint_user_read.php";
     private Bitmap bitmap;
 
 
     public AddSuspect() {
-        // Required empty public constructor
     }
 
     @Override
@@ -129,11 +129,26 @@ private String encodeImage;
         complain_names = view.findViewById(R.id.complain_name);
 
 
+        complain_names.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                comp_id = cmp_id.get(i);
+                Toast.makeText(getContext(), "complaibt id ="+comp_id, Toast.LENGTH_SHORT).show();
+            }
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+            comp_id = cmp_id.get(0);
+            }
+        });
+
         ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
         if (actionBar != null) {actionBar.setTitle(" Add Suspect");}
-        loadComplainNameByUser(output.toString());
-
-
+        try {
+            loadComplainNameByUser();
+        } catch (JSONException e) {
+            Toast.makeText(getContext(), "eror in method", Toast.LENGTH_SHORT).show();
+            throw new RuntimeException(e);
+        }
         back_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -145,15 +160,12 @@ private String encodeImage;
 
         List<String> Complain_name_list = new ArrayList<>();
 
-
         ArrayAdapter<String>  complain_name_adapter = new ArrayAdapter<>(
                 getActivity(),
                 android.R.layout.simple_spinner_item,
                 Complain_name_list
         );
         complain_name_adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-
-// Set the adapter to the spinner
          complain_name.setAdapter(complain_name_adapter);
 
         RequestQueue queue;
@@ -181,28 +193,20 @@ private String encodeImage;
             @Override
             public void onErrorResponse(VolleyError error) {
                 Toast.makeText(getActivity(), "error = "+error.toString(), Toast.LENGTH_SHORT).show();
-                // Handle any error
-
             }
         }
         );
         queue = Volley.newRequestQueue(getActivity());
         queue.add(jsonArrayRequest);
-//          adapter=new ArrayAdapter(MainActivity.this, android.R.layout.simple_expandable_list_item_1,list);
-//          spinner.setAdapter(adapter);
 
         country.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 listofstate.clear();
-
-
                 if (i==0) {
                     StringRequest stringRequest1 = new StringRequest(Request.Method.POST, URL2, new Response.Listener<String>() {
                         @Override
                         public void onResponse(String response) {
-//                            Toast.makeText(MainActivity.this, "response = "+response.toString(), Toast.LENGTH_SHORT).show();
-//                            System.out.println("response = "+response.toString());
                             try {
                                 JSONArray jsonArray = new JSONArray(response);
                                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -230,7 +234,6 @@ private String encodeImage;
                         @Override
                         protected Map<String, String> getParams() throws AuthFailureError {
                             HashMap<String, String> hashMap = new HashMap<>();
-                            //  hashMap.put("country_id", "country-75");
                             hashMap.put("country_id","1");
                             return hashMap;
                         }
@@ -296,22 +299,16 @@ private String encodeImage;
 
             }
         });
-
-////                            //    Toast.makeText(MainActivity.this, "response = "+response.toString(), Toast.LENGTH_SHORT).show();
         district.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-//                Toast.makeText(getActivity(), "you selcted ="+listofdistrict.get(i), Toast.LENGTH_SHORT).show();
                 listofcity.clear();
-
                 StringRequest stringRequest3 = new StringRequest(Request.Method.POST, URL4, new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
-                        //  System.out.println("response = "+response.toString());
                         String city_name;
                         try {
                             JSONArray jsonArray = new JSONArray(response);
-                            //   Toast.makeText(MainActivity.this, "statecode = "+statecode.get(i), Toast.LENGTH_SHORT).show();
                             for (int i=0;i<jsonArray.length();i++) {
                                 JSONObject jsonObject = jsonArray.getJSONObject(i);
                                 city_name = jsonObject.getString("city_name");
@@ -322,7 +319,6 @@ private String encodeImage;
                         } catch (JSONException e) {
                             throw new RuntimeException(e);
                         }
-                        // System.out.println("districynam == "+district_name);
                         adapter4 = new ArrayAdapter(getActivity(), android.R.layout.simple_expandable_list_item_1, listofcity);
                         adapter4.setDropDownViewResource(android.R.layout.simple_expandable_list_item_1);
                         city.setAdapter(adapter4);
@@ -337,8 +333,6 @@ private String encodeImage;
                     @Override
                     protected Map<String, String> getParams() throws AuthFailureError {
                         HashMap<String, String> hashMap = new HashMap<>();
-                        // hashMap.put("state_id", "state-12");
-                        // hashMap.put("state_id",statecode.get(i));
                         hashMap.put("district_id","1");
                         return hashMap;
                     }
@@ -392,52 +386,30 @@ private String encodeImage;
         return view;
     }
 
-    private void loadComplainNameByUser(String userId) {
+    private void loadComplainNameByUser() throws JSONException {
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, COMPLAIN_NAME_EBY_USER,
-                new Response.Listener<String>() {
+        Complaintdeo complaintdeo = new Complaintdeo();
+        complaintdeo.getUserAllComplaint(new UserDataAccess().getUserId(getActivity()).toString(), getContext()
+                , new UserCallBack() {
                     @Override
-                    public void onResponse(String response) {
-                        Toast.makeText(getContext(), "response = "+response.toString(), Toast.LENGTH_SHORT).show();
-                        Log.d("resonse",response.toString());
+                    public void userSuccess(Object object) {
                         listcomplain = new ArrayList<>();
-                        try {
-                            JSONArray jsonArray = new JSONArray(response);
-                            for (int i = 0; i < jsonArray.length() ; i++){
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                String complain_name = jsonObject.getString("complaint_subject")+jsonObject.getString("complaint_description");
-                                if (complain_name!=null) {
-                                    listcomplain.add(complain_name);
-                                }
-                            }
-                        } catch (JSONException e) {
-                            Toast.makeText(getContext(), "JSONEROR", Toast.LENGTH_SHORT).show();
-                            throw new RuntimeException(e);
+                        ArrayList<ComplaintClass>list1 = (ArrayList<ComplaintClass>) object;
+                        for (int i = 0; i < list1.size() ; i ++){
+                            ComplaintClass complaintClass = list1.get(i);
+                            listcomplain.add(complaintClass.getComplaint_subject()+complaintClass.getComplaint_description());
+                            cmp_id.put(i,(complaintClass.getComplaint_id()));
+                            adapter = new ArrayAdapter(getContext(), android.R.layout.simple_expandable_list_item_1,listcomplain);
+                            adapter.setDropDownViewResource(android.R.layout.simple_expandable_list_item_1);
+                            complain_names.setAdapter(adapter);
                         }
-                        adapter = new ArrayAdapter(getContext(), android.R.layout.simple_expandable_list_item_1,listcomplain);
-                        adapter.setDropDownViewResource(android.R.layout.simple_expandable_list_item_1);
-                        complain_names.setAdapter(adapter);
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(), "error "+error.toString(), Toast.LENGTH_SHORT).show();
-            }
-        }){
-            @Nullable
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                HashMap <String , String> map = new HashMap<>();
-                UserDataAccess userDataAccess = new UserDataAccess();
-                map.put("user_id",userDataAccess.getUserId(getActivity()));
-                return map;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-        requestQueue.add(stringRequest);
-
+                    @Override
+                    public void userError(String error) {
+                        Toast.makeText(getContext(), "Error while lo", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
-
     private void showDatePickerDialog() {
 
         Calendar calendar = Calendar.getInstance();
@@ -542,34 +514,83 @@ private String encodeImage;
 
     private void save() {
 
-        final String name1 = this.name.getText().toString().trim();
-        final String address1=this.address.getText().toString().trim();
-        final String country1 = this.country.toString().trim();
-        final String state1 = this.state.toString().trim();
-        final String district1 = this.district.toString().trim();
-        final String city1 = this.city.toString().trim();
-        final String email1 = this.email.getText().toString().trim();
-        final String dob1 = this.dob.getText().toString().trim();
-        final String mobile1 = this.contact.getText().toString().trim();
-        final String addhar1 = this.addhar.getText().toString().trim();
-        String gender = male.isChecked() ? "Male" : "Female";
 
-        SuspectClass suspectClass = new SuspectClass(name1,"","",dob1,gender,mobile1,email1,addhar1,country1,state1,
-                district1,city1,"",encodeImage,1,complain_name.getSelectedItemPosition());
 
-        SuspectDeo suspectDeo = new SuspectDeo();
-        suspectDeo.createSuspect(suspectClass, getContext(), getActivity(), new UserCallBack() {
-            @Override
-            public void userSuccess(Object object) {
-                Toast.makeText(getContext(), "success "+(String)object , Toast.LENGTH_SHORT).show();
+        if (!name.getText().toString().isEmpty()){
+            if (!this.address.getText().toString().isEmpty()){
+                if (gender.getCheckedRadioButtonId()!=-1){
+                    if (!contact.getText().toString().isEmpty()){
+                        if (!dob.getText().toString().isEmpty()){
+                            if (!email.getText().toString().isEmpty()){
+                                if (!addhar.getText().toString().isEmpty()){
+                                    if (!encodeImage.isEmpty()){
+                                        if (!comp_id.toString().isEmpty()){
+                                            String name1 = this.name.getText().toString().trim();
+                                            String address1=this.address.getText().toString().trim();
+                                            String country1 = this.country.toString().trim();
+                                            String state1 = this.state.toString().trim();
+                                            String district1 = this.district.toString().trim();
+                                            String city1 = this.city.toString().trim();
+                                            String email1 = this.email.getText().toString().trim();
+                                            String dob1 = this.dob.getText().toString().trim();
+                                            String mobile1 = this.contact.getText().toString().trim();
+                                            String addhar1 = this.addhar.getText().toString().trim();
+                                            String gender = male.isChecked() ? "Male" : "Female";
+
+                                            SuspectClass suspectClass = new SuspectClass(name1,"","",dob1,gender,mobile1,email1,addhar1,country1,state1,
+                                                    district1,city1,"",encodeImage,1,Integer.parseInt(comp_id));
+//                                            Toast.makeText(getContext(), "complaingt id ="+comp_id, Toast.LENGTH_SHORT).show();
+                                            SuspectDeo suspectDeo = new SuspectDeo();
+                                            suspectDeo.createSuspect(comp_id,suspectClass, getContext(), getActivity(), new UserCallBack() {
+                                                @Override
+                                                public void userSuccess(Object object) {
+                                                    Toast.makeText(getContext(), "success "+(String)object , Toast.LENGTH_SHORT).show();
+                                                    showPositiveDialogue();
+                                                }
+
+                                                @Override
+                                                public void userError(String error) {
+                                                    Toast.makeText(getContext(), "error"+error.toString(), Toast.LENGTH_SHORT).show();
+                                                    showNagativeDiaogue();
+                                                }
+                                            });
+                                        }
+                                        else {
+                                            Toast.makeText(getContext(), "select complaint is empty", Toast.LENGTH_SHORT).show();
+                                        }
+
+                                    }
+                                    else {
+                                        Toast.makeText(getContext(), "select image from gallery", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                else {
+                                    Toast.makeText(getContext(), "adhar is empty", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            else {
+                                Toast.makeText(getContext(), "email is empty", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        else {
+                            Toast.makeText(getContext(), "select date of birth", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    else {
+                        Toast.makeText(getContext(), "contact is empty", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else {
+                    Toast.makeText(getContext(), "select gender", Toast.LENGTH_SHORT).show();
+                }
             }
-
-            @Override
-            public void userError(String error) {
-                Toast.makeText(getContext(), "error"+error.toString(), Toast.LENGTH_SHORT).show();
+            else {
+                Toast.makeText(getContext(), "adress is empty", Toast.LENGTH_SHORT).show();
             }
-        });
-
+        }
+        else {
+            Toast.makeText(getContext(), "name is empty", Toast.LENGTH_SHORT).show();
+        }
     }
     private void showNagativeDiaogue() {
 

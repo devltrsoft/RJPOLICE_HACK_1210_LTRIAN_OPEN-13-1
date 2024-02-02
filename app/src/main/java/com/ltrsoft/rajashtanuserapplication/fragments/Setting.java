@@ -32,7 +32,7 @@ public class Setting extends Fragment {
     private Switch aSwitch;
     private CardView cardView;
     private TextView contact_tv;
-    private String filelang = "language.txt";
+        private String filelang = "language1.txt";
    private String lang;
     private String translatedText, translatedText1;
     @Override
@@ -83,52 +83,52 @@ public class Setting extends Fragment {
                 @Override
                 public void onClick(DialogInterface dialogInterface, int i) {
                     if (i == 0) {
-                        setLocal("as");
+//                        setLocal("as");
                         lang = "as";
-                        getActivity().recreate();
+//                        getActivity().recreate();
                     } else if (i == 1) {
-                        setLocal("bn");
+//                        setLocal("bn");
                         lang = "bn";
-                        getActivity().recreate();
+//                        getActivity().recreate();
                     } else if (i == 2) {
-                        setLocal("hi");
+//                        setLocal("hi");
                         lang = "hi";
-                        getActivity().recreate();
+//                        getActivity().recreate();
                     } else if (i == 3) {
-                        setLocal("kn");
+//                        setLocal("kn");
                         lang = "kn";
-                        getActivity().recreate();
+//                        getActivity().recreate();
                     } else if (i == 4) {
-                        setLocal("mr");
-                        lang = "mr";
-                        getActivity().recreate();
+//                        setLocal("mr");
+//                        lang = "mr";
+//                        getActivity().recreate();
                     } else if (i == 5) {
-                        setLocal("ta");
+//                        setLocal("ta");
                         lang = "ta";
-                        getActivity().recreate();
+//                        getActivity().recreate();
                     } else if (i == 6) {
-                        setLocal("te");
+//                        setLocal("te");
                         lang = "te";
-                        getActivity().recreate();
+//                        getActivity().recreate();
                     } else if (i == 7) {
-                        setLocal("ur");
+//                        setLocal("ur");
                         lang = "ur";
-                        getActivity().recreate();
+//                        getActivity().recreate();
                     } else if (i == 8) {
-                        setLocal("en");
+//                        setLocal("en");
                         lang = "en";
-                        getActivity().recreate();
+//                        getActivity().recreate();
                     }
 
-                    try {
-                        FileOutputStream fos = getActivity().openFileOutput(filelang, Context.MODE_PRIVATE);
-                        String data = lang;
-                        fos.write(data.getBytes());
-                        fos.flush();
-                        fos.close();
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
+//                    try {
+//                        FileOutputStream fos = getActivity().openFileOutput(filelang, Context.MODE_PRIVATE);
+//                        String data = lang;
+//                        fos.write(data.getBytes());
+//                        fos.flush();
+//                        fos.close();
+//                    } catch (IOException e) {
+//                        e.printStackTrace();
+//                    }
                     dialogInterface.dismiss();
 
                 }
@@ -152,6 +152,6 @@ public class Setting extends Fragment {
         public void loadlocale() {
             SharedPreferences pref = getActivity().getSharedPreferences("Setting", Activity.MODE_PRIVATE);
             String language = pref.getString("my_lang", "");
-            setLocal(language);
+//            setLocal(language);
         }
 }

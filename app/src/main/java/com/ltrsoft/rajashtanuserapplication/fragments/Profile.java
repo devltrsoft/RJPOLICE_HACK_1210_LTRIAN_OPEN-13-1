@@ -22,6 +22,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.ltrsoft.rajashtanuserapplication.R;
+import com.ltrsoft.rajashtanuserapplication.classes.User;
+import com.ltrsoft.rajashtanuserapplication.interfaces.UserCallBack;
+import com.ltrsoft.rajashtanuserapplication.model.Userdeo;
 import com.ltrsoft.rajashtanuserapplication.utils.UserDataAccess;
 
 import org.json.JSONArray;
@@ -53,7 +56,6 @@ public class Profile extends Fragment {
     public static  final String URL4 ="https://rj.ltr-soft.com/public/police_api/city/select_city.php";
     private    RequestQueue queue;
     private TextView city,district,state,country,addhar,email,mobile,gender,dob,address,fname,mname,lname;
-    private static final String USER_PROFILE_READ_URL = "https://rj.ltr-soft.com/public/police_api/data/user_read.php";
     private static final String USER_PROFILE_UPDATE_URL = "https://rj.ltr-soft.com/public/police_api/data/user_read.php";
 
     StringBuilder output = new StringBuilder();
@@ -83,22 +85,6 @@ public class Profile extends Fragment {
         mname = view.findViewById(R.id.mname);
         lname = view.findViewById(R.id.lname);
         loadData();
-
-
-
-        try {
-            FileInputStream fileInputStream = getActivity().openFileInput("mytextfile.txt");
-            InputStreamReader inputReader = new InputStreamReader(fileInputStream);
-            char[] buffer = new char[1024];
-            int read;
-            while ((read = inputReader.read(buffer)) > 0) {
-                output.append(buffer, 0, read);
-            }
-          //  Toast.makeText(getContext(), "your fiile ="+output.toString(), Toast.LENGTH_SHORT).show();
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
         edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -108,78 +94,34 @@ public class Profile extends Fragment {
                         .replace(R.id.containermain, profile).commit();
             }
         });
-
         return view;
     }
 
        private void loadData() {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, USER_PROFILE_READ_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                     //   System.out.println("response = "+response.toString());
-                        if (response!=null){
-                            //Toast.makeText(getContext(), "response = "+response.toString(), Toast.LENGTH_SHORT).show();
-                            try {
-                                JSONArray jsonArray = new JSONArray(response);
-                                for (int i = 0 ; i < jsonArray.length() ; i++) {
-                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                    String user_fname = jsonObject.getString("user_fname");
-                                    String user_mname = jsonObject.getString("user_mname");
-                                    String user_lname = jsonObject.getString("user_lname");
-                                    String user_address = jsonObject.getString("user_address");
-
-                                    String city_id = jsonObject.getString("city_name");
-                                    String district_id = jsonObject.getString("district_name");
-                                    String country_id = jsonObject.getString("country_name");
-                                    String state_id = jsonObject.getString("state_name");
-
-                                    String user_email = jsonObject.getString("user_email");
-                                    String user_gender = jsonObject.getString("user_gender");
-                                    String user_dob = jsonObject.getString("user_dob");
-                                    String user_mobile1 = jsonObject.getString("user_mobile1");
-                                    String user_adhar = jsonObject.getString("user_adhar");
-
-
-                                    state.setText(state_id);
-                                    city.setText(city_id);
-                                    district.setText(district_id);
-                                    country.setText(country_id);
-                                    addhar.setText(user_adhar);
-                                    email.setText(user_email);
-                                    mobile.setText(user_mobile1);
-                                    gender.setText(user_gender);
-                                    dob.setText(user_dob);
-                                    address.setText(user_address);
-                                    fname.setText(user_fname);
-                                    mname.setText(user_mname);
-                                    lname.setText(user_lname);
-
-                                }
-                            } catch (JSONException e) {
-                                Toast.makeText(getContext(), "json error"+e.toString(), Toast.LENGTH_SHORT).show();
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getContext(), "error "+error.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                })
-        {
-            @Nullable
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                HashMap<String, String> hashMap = new HashMap<>();
-                UserDataAccess userDataAccess = new UserDataAccess();
-                hashMap.put("user_id", userDataAccess.getUserId(getActivity()));
-                return hashMap;
-
-        }
-        };
-        queue.add(stringRequest);
+           Userdeo userdeo = new Userdeo();
+           UserDataAccess userDataAccess = new UserDataAccess();
+           userdeo.getUser(userDataAccess.getUserId(getActivity()), getContext(), new UserCallBack() {
+               @Override
+               public void userSuccess(Object object) {
+                   User user =  (User) object;
+                   state.setText(user.getState_name());
+                   city.setText(user.getCity_name());
+                   district.setText(user.getDistrict_name());
+                   country.setText(user.getCountry_name());
+                   addhar.setText(user.getUser_adhar());
+                   email.setText(user.getUser_email());
+                   mobile.setText(user.getUser_mobile1());
+                   gender.setText(user.getUser_gender());
+                   dob.setText(user.getUser_dob());
+                   address.setText(user.getUser_address());
+                   fname.setText(user.getUser_fname());
+                   mname.setText(user.getUser_mname());
+                   lname.setText(user.getUser_lname());
+               }
+               @Override
+               public void userError(String error) {
+                   Toast.makeText(getContext(), "error"+error.toString(), Toast.LENGTH_SHORT).show();
+               }
+           });
     }
 }

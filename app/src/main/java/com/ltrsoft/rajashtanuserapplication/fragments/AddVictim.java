@@ -44,8 +44,10 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.ltrsoft.rajashtanuserapplication.R;
+import com.ltrsoft.rajashtanuserapplication.classes.ComplaintClass;
 import com.ltrsoft.rajashtanuserapplication.classes.VictimClass;
 import com.ltrsoft.rajashtanuserapplication.interfaces.UserCallBack;
+import com.ltrsoft.rajashtanuserapplication.model.Complaintdeo;
 import com.ltrsoft.rajashtanuserapplication.model.Victimdeo;
 import com.ltrsoft.rajashtanuserapplication.utils.UserDataAccess;
 
@@ -70,7 +72,7 @@ public class AddVictim extends Fragment {
 
     private EditText name,address,contact,dob,email,addhar;
     private RadioGroup gender;
-    private String encodeImage;
+    private String encodeImage="";
     private   ArrayList<String> listcomplain;
     static  String COMPLAIN_NAME_EBY_USER1 = "https://rj.ltr-soft.com/public/police_api/data/complaint_user_read.php";
 
@@ -78,6 +80,7 @@ public class AddVictim extends Fragment {
     private Button save,upload;
     private Spinner country,state,district,city,complainname;
     private ImageView photo,back_image;
+    public HashMap<Integer,String>hashMap=new HashMap<>();
 
     public ArrayAdapter adapter,adapter2,adapter3,adapter4;
     private Bitmap bitmap;
@@ -89,7 +92,7 @@ public class AddVictim extends Fragment {
     HashMap <Integer,String> statecode=new HashMap<>();
     HashMap <Integer,String> districtcode=new HashMap<>();
     HashMap <Integer,String> citycode=new HashMap<>();
-
+    String Complain_id;
     public static  final String URL1 ="https://rj.ltr-soft.com/public/police_api/country/select_country.php ";
     public static  final String URL2 ="https://rj.ltr-soft.com/public/police_api/state/select_state.php";
     public static  final String URL3 ="https://rj.ltr-soft.com/public/police_api/district/select_district.php";
@@ -125,13 +128,23 @@ public class AddVictim extends Fragment {
         back_image=view.findViewById(R.id.back_image);
         complainname = view.findViewById(R.id.complain_name);
 
-
-        String filename = "user_id.txt";
-        StringBuilder output = new StringBuilder(); // Initialize StringBuilder here
-
         UserDataAccess access = new UserDataAccess();
-loadComplainNameByUser(access.getUserId(getActivity()));
+        try {
+            loadComplainNameByUser(access.getUserId(getActivity()));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+        complainname.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            @Override
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+            Complain_id = hashMap.get(i);
+            }
 
+            @Override
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                Complain_id = hashMap.get(0);
+            }
+        });
         back_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -375,9 +388,6 @@ loadComplainNameByUser(access.getUserId(getActivity()));
             @Override
             public void onClick(View v) {
                 save();
-//                Adding_complain_detail adding_complain_detail=new Adding_complain_detail();
-//                getFragmentManager(). beginTransaction().replace(R.id.containers, adding_complain_detail  ).addToBackStack(null).commit();
-
             }
         });
 
@@ -488,85 +498,104 @@ loadComplainNameByUser(access.getUserId(getActivity()));
         Intent galleryIntent = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
         startActivityForResult(galleryIntent, GALLERY_REQ_CODE);
     }
-
     private void save() {
 
-        final String name1 = this.name.getText().toString().trim();
-        final String address1=this.address.getText().toString().trim();
-        final String country1 = this.country.toString().trim();
-        final String state1 = this.state.toString().trim();
-        final String district1 = this.district.toString().trim();
-        final String city1 = this.city.toString().trim();
-        final String email1 = this.email.getText().toString().trim();
-        final String dob1 = this.dob.getText().toString().trim();
-        final String mobile1 = this.contact.getText().toString().trim();
-        final String addhar1 = this.addhar.getText().toString().trim();
-        String gender = male.isChecked() ? "Male" : "Female";
-
-
-        VictimClass victimClass = new VictimClass(complainname.getSelectedItem().toString(),name1,name1,name1,
-                address1,gender,addhar1,encodeImage,dob1,mobile1,state1,district1,country1);
-        Victimdeo victimdeo = new Victimdeo();
-        victimdeo.create(victimClass, getContext(), new UserCallBack() {
-            @Override
-            public void userSuccess(Object object) {
-                Toast.makeText(getContext(), "response"+(String) object, Toast.LENGTH_SHORT).show();
-            }
-
-            @Override
-            public void userError(String error) {
-                Toast.makeText(getContext(), "response"+error, Toast.LENGTH_SHORT).show();
-            }
-        });
-
-    }
-    private void loadComplainNameByUser(String userId) {
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, COMPLAIN_NAME_EBY_USER1,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-//                        Toast.makeText(getContext(), "response = "+response.toString(), Toast.LENGTH_SHORT).show();
-                        Log.d("resonse",response.toString());
-                        if (!response.isEmpty()) {
-                            listcomplain = new ArrayList<>();
-                            try {
-                                JSONArray jsonArray = new JSONArray(response);
-                                for (int i = 0; i < jsonArray.length(); i++) {
-                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                    String complain_name = jsonObject.getString("complaint_subject") + jsonObject.getString("complaint_description");
-                                    if (complain_name != null) {
-                                        listcomplain.add(complain_name);
+        if (!name.getText().toString().isEmpty()){
+            if (!address.getText().toString().isEmpty()){
+                if (gender.getCheckedRadioButtonId()!=-1){
+                    if (!contact.getText().toString().isEmpty()){
+                        if (!dob.getText().toString().isEmpty()){
+                            if (!email.getText().toString().isEmpty()){
+                                if (!addhar.getText().toString().isEmpty()){
+                                    if (!encodeImage.isEmpty()){
+                                        Toast.makeText(getContext(), "All data id valid", Toast.LENGTH_SHORT).show();
+                                    }
+                                    else {
+                                        Toast.makeText(getContext(), "please enter name", Toast.LENGTH_SHORT).show();
                                     }
                                 }
-                            } catch (JSONException e) {
-                                Toast.makeText(getContext(), "JSONEROR" + e.toString(), Toast.LENGTH_SHORT).show();
-                                Log.d("json error", e.toString());
-                                throw new RuntimeException(e);
+                                else {
+                                    Toast.makeText(getContext(), "please enter name", Toast.LENGTH_SHORT).show();
+                                }
                             }
+                            else {
+                                Toast.makeText(getContext(), "please enter name", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        else {
+                            Toast.makeText(getContext(), "please enter name", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    else {
+                        Toast.makeText(getContext(), "please enter name", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else {
+                    Toast.makeText(getContext(), "please select gender", Toast.LENGTH_SHORT).show();
+                }
+            }
+            else {
+                Toast.makeText(getContext(), "please enter name", Toast.LENGTH_SHORT).show();
+            }        }
+        else {
+            Toast.makeText(getContext(), "please enter name", Toast.LENGTH_SHORT).show();
+        }
+
+
+
+//        final String name1 = this.name.getText().toString().trim();
+//        final String address1=this.address.getText().toString().trim();
+//        final String country1 = this.country.toString().trim();
+//        final String state1 = this.state.toString().trim();
+//        final String district1 = this.district.toString().trim();
+//        final String city1 = this.city.toString().trim();
+//        final String email1 = this.email.getText().toString().trim();
+//        final String dob1 = this.dob.getText().toString().trim();
+//        final String mobile1 = this.contact.getText().toString().trim();
+//        final String addhar1 = this.addhar.getText().toString().trim();
+//        String gender = male.isChecked() ? "Male" : "Female";
+//
+//
+//        VictimClass victimClass = new VictimClass(complainname.getSelectedItem().toString(),name1,name1,name1,
+//                address1,gender,addhar1,encodeImage,dob1,mobile1,state1,district1,country1);
+//        Victimdeo victimdeo = new Victimdeo();
+//        victimdeo.create(victimClass, getContext(), new UserCallBack() {
+//            @Override
+//            public void userSuccess(Object object) {
+//                Toast.makeText(getContext(), "response"+(String) object, Toast.LENGTH_SHORT).show();
+//                showPositiveDialogue();
+//            }
+//
+//            @Override
+//            public void userError(String error) {
+//                Toast.makeText(getContext(), "response"+error, Toast.LENGTH_SHORT).show();
+//                showNagativeDiaogue();
+//            }
+//        });
+
+    }
+    private void loadComplainNameByUser(String userId) throws JSONException {
+        Complaintdeo complaintdeo = new Complaintdeo();
+        complaintdeo.getUserAllComplaint(new UserDataAccess().getUserId(getActivity()).toString(), getContext()
+                , new UserCallBack() {
+                    @Override
+                    public void userSuccess(Object object) {
+                        listcomplain = new ArrayList<>();
+                        ArrayList<ComplaintClass>list1 = (ArrayList<ComplaintClass>) object;
+                        for (int i = 0; i < list1.size() ; i ++){
+                            ComplaintClass complaintClass = list1.get(i);
+                            listcomplain.add(complaintClass.getComplaint_subject()+complaintClass.getComplaint_description());
+                            hashMap.put(i,(complaintClass.getComplaint_id()));
                         }
                         adapter = new ArrayAdapter(getContext(), android.R.layout.simple_expandable_list_item_1,listcomplain);
                         adapter.setDropDownViewResource(android.R.layout.simple_expandable_list_item_1);
                         complainname.setAdapter(adapter);
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(), "error "+error.toString(), Toast.LENGTH_SHORT).show();
-            }
-        }){
-            @Nullable
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                HashMap <String , String> map = new HashMap<>();
-                map.put("user_id",userId);
-                map.put("user_id","1");
-                return map;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-        requestQueue.add(stringRequest);
-
+                    @Override
+                    public void userError(String error) {
+                        Toast.makeText(getContext(), "Error while loading complain", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
     private void showNagativeDiaogue() {
 
@@ -582,7 +611,6 @@ loadComplainNameByUser(access.getUserId(getActivity()));
     }
 
     private void showPositiveDialogue() {
-
         AlertDialog.Builder builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Success")
                 .setMessage("Data Saved Succesfully ")

@@ -14,18 +14,16 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ltrsoft.rajashtanuserapplication.R;
 import com.ltrsoft.rajashtanuserapplication.classes.VictimClass;
+import com.ltrsoft.rajashtanuserapplication.fragments.Victim_History_Detail;
 
 import java.util.ArrayList;
 
 public class VictimAdapter extends RecyclerView.Adapter<VictimAdapter.ViewHolder> {
     public ArrayList<VictimClass> list;
-
     private AdapterView.OnItemClickListener mListener;
-
     public VictimAdapter(ArrayList<VictimClass> list) {
         this.list = list;
     }
-
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -45,10 +43,10 @@ public class VictimAdapter extends RecyclerView.Adapter<VictimAdapter.ViewHolder
             public void onClick(View v) {
                 Bundle bundle=new Bundle();
 //
-//                Victim_History_Detail v1=new Victim_History_Detail();
-//                AppCompatActivity activity=(AppCompatActivity)v.getContext();
-//
-//                bundle.putString("cmp_id", victimClass.getCmp_id());
+                Victim_History_Detail v1=new Victim_History_Detail();
+                AppCompatActivity activity=(AppCompatActivity)v.getContext();
+
+                bundle.putString("cmp_id", victimClass.getCmp_id());
 //                bundle.putString("complaint_victim_fname", victimClass.getComplaint_victim_fname());
 //                bundle.putString("complaint_victim_mname", victimClass.getComplaint_victim_mname());
 //                bundle.putString("complaint_victim_lname", victimClass.getComplaint_victim_lname());
@@ -62,8 +60,8 @@ public class VictimAdapter extends RecyclerView.Adapter<VictimAdapter.ViewHolder
 //                bundle.putString("district_name",victimClass.getDistrict_name());
 //                bundle.putString("country_name",victimClass.getCountry_name());
 //                bundle.putString("city_name",victimClass.getCity_name());
-//                v1.setArguments(bundle);
-//                activity.getSupportFragmentManager().beginTransaction().replace(R.id.containermain, v1).addToBackStack(null).commit();
+                v1.setArguments(bundle);
+                activity.getSupportFragmentManager().beginTransaction().replace(R.id.containermain, v1).addToBackStack(null).commit();
 
             }
         });

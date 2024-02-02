@@ -47,13 +47,17 @@ android:background="#F5F5F5"
             android:layout_marginRight="20dp"
             />
     </androidx.cardview.widget.CardView>
-
+<LinearLayout
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal">
 
     <EditText
         android:id="@+id/complain_name"
         android:layout_width="330dp"
         android:layout_height="45dp"
         android:layout_marginLeft="5dp"
+        android:layout_marginBottom="20dp"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:background="@drawable/textbox_boder"
@@ -61,33 +65,72 @@ android:background="#F5F5F5"
         android:paddingLeft="15dp"
         android:text=""
         android:textSize="25dp" />
-
+    <ImageView
+        android:id="@+id/mike"
+        android:layout_marginTop="20dp"
+        android:layout_width="50dp"
+        android:src="@drawable/mic2"
+        android:layout_height="50dp"/>
+</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
     <EditText
         android:id="@+id/complain_description"
         android:layout_width="330dp"
         android:layout_height="150dp"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="20dp"
+
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:background="@drawable/textbox_boder"
         android:hint=" Complaint Description"
         android:paddingLeft="15dp"
+        android:layout_marginBottom="20dp"
          android:textSize="25dp"
         android:gravity="top|start" />
 
+        <ImageView
+            android:id="@+id/descmike"
+            android:layout_width="50dp"
+            android:layout_height="39dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="15dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/mic2" />
+    </LinearLayout>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
     <EditText
         android:id="@+id/complain_Against"
-        android:layout_width="330dp"
+        android:layout_width="310dp"
         android:layout_height="45dp"
         android:layout_gravity="center"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="20dp"
+        android:layout_marginBottom="20dp"
+        app:endIconDrawable="@drawable/mic2"
         android:layout_marginTop="20dp"
         android:background="@drawable/textbox_boder"
         android:hint="              Complaint Against"
         android:paddingLeft="15dp"
         android:text=""
         android:textSize="25dp" />
+
+        <ImageView
+            android:id="@+id/compagainstmike"
+            android:layout_width="50dp"
+            android:layout_height="39dp"
+            android:layout_gravity="end"
+            android:layout_marginTop="30dp"
+            android:layout_marginRight="20dp"
+            android:src="@drawable/mic2" />
+
+    </LinearLayout>
 <LinearLayout
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -113,35 +156,63 @@ android:background="#F5F5F5"
         android:layout_marginTop="15dp"
         android:background="@drawable/calendar" />
 </LinearLayout>
+
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
     <EditText
         android:id="@+id/incident_address"
-        android:layout_marginLeft="5dp"
-        android:layout_width="330dp"
+        android:layout_marginLeft="30dp"
+        android:layout_width="300dp"
         android:layout_height="45dp"
         android:layout_gravity="center"
         android:layout_marginTop="20dp"
         android:background="@drawable/textbox_boder"
         android:hint="            incident_address"
         android:paddingLeft="15dp"
+        android:layout_marginBottom="20dp"
         android:text=""
         android:textSize="25dp" />
 
-
+        <ImageView
+            android:id="@+id/adressmike"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:layout_marginLeft="10dp"
+            android:layout_below="@id/contact"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/mic2" />
+    </LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
 
     <EditText
         android:id="@+id/complain_contact_no"
-        android:layout_width="330dp"
+        android:layout_width="300dp"
         android:layout_height="45dp"
       android:layout_gravity="center"
-        android:layout_marginTop="20dp"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="20dp"
         android:inputType="number"
-        android:layout_marginLeft="5dp"
+        android:layout_marginLeft="30dp"
         android:background="@drawable/textbox_boder"
         android:hint="              Contact No"
         android:paddingLeft="15dp"
         android:text=""
         android:textSize="25dp" />
-
+    <ImageView
+        android:id="@+id/contactmike"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginLeft="10dp"
+        android:layout_below="@id/contact"
+        android:layout_marginTop="15dp"
+        android:background="@drawable/mic2" />
+    </LinearLayout>
     <Spinner
         android:id="@+id/complain_Type"
         android:layout_width="330dp"
@@ -187,7 +258,7 @@ android:background="#F5F5F5"
             android:layout_marginTop="20dp"
             android:inputType="text"
             android:background="@drawable/textbox_boder"
-            android:hint="Complain Location"
+            android:hint=""
             android:paddingLeft="15dp"
             android:text=""
             android:textSize="25dp" />

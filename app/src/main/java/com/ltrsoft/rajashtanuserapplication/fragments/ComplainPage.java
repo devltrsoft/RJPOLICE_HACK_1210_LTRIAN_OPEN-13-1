@@ -1,10 +1,10 @@
 package com.ltrsoft.rajashtanuserapplication.fragments;
-
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.fragment.app.Fragment;
@@ -34,29 +34,21 @@ import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
-
 public class ComplainPage extends Fragment {
-
     private RecyclerView recyclerView;
     ArrayList<ComplaintClass> list;
+    TextView textView;
     public final static String INVESTIGATION_URL = "https://rj.ltr-soft.com/public/police_api/data/complaint_user_read.php";
-
     StringBuilder output = new StringBuilder();
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.complain_page, container, false);
         recyclerView = view.findViewById(R.id.investigation_recycler);
-
+        textView = view.findViewById(R.id.cmptv);
         loaRecycle();
-
-
-
-
         return view;
     }
-
     private void loaRecycle() {
         Complaintdeo complaintdeo  = new Complaintdeo();
         UserDataAccess userDataAccess = new UserDataAccess();
@@ -64,22 +56,31 @@ public class ComplainPage extends Fragment {
             complaintdeo.getUserAllComplaint(userDataAccess.getUserId(getActivity()), getContext(), new UserCallBack() {
                 @Override
                 public void userSuccess(Object object) {
-                    list = (ArrayList<ComplaintClass>)object;
-                    ComplaintAdapter adapter = new ComplaintAdapter(list);
-                    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
-                    recyclerView.setLayoutManager(layoutManager);
-                    recyclerView.setAdapter(adapter);
+                    list = (ArrayList<ComplaintClass>) object;
+                      if (list.isEmpty()) {
+                        Toast.makeText(getContext(), "you have no Complaint registered", Toast.LENGTH_SHORT).show();
+                        recyclerView.setVisibility(View.GONE);
+                        textView.setVisibility(View.VISIBLE);
+                        textView.setText("You have no complaint registered");
+                    }
+                    else {
+//                        list = (ArrayList<ComplaintClass>) object;
+                        ComplaintAdapter adapter = new ComplaintAdapter(list);
+                        LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+                        recyclerView.setLayoutManager(layoutManager);
+                        recyclerView.setAdapter(adapter);
+                    }
                 }
                 @Override
                 public void userError(String error) {
                     Toast.makeText(getContext(), "error "+error.toString(), Toast.LENGTH_SHORT).show();
-                    loaRecycle();
+                        recyclerView.setVisibility(View.GONE);
+                        textView.setVisibility(View.VISIBLE);
+                        textView.setText("Error while loading complain");
                 }
             });
         } catch (JSONException e) {
             throw new RuntimeException(e);
         }
     }
-
-
 }

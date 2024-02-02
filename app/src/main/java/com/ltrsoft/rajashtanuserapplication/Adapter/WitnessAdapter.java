@@ -16,6 +16,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.ltrsoft.rajashtanuserapplication.R;
 import com.ltrsoft.rajashtanuserapplication.classes.WitnessClass;
+import com.ltrsoft.rajashtanuserapplication.fragments.WitnessDetailFragment;
 
 import java.util.List;
 
@@ -45,25 +46,28 @@ public class WitnessAdapter extends RecyclerView.Adapter<WitnessAdapter.WitnessV
                 Toast.makeText(v.getContext(), "Clicked on item", Toast.LENGTH_SHORT).show();
                 AppCompatActivity activity = (AppCompatActivity) v.getContext();
                 Bundle args = new Bundle();
-                args.putString("witnessfame", model.getComplaint_witness_fname());
-                args.putString("witnessmame", model.getComplaint_witness_mname());
-                args.putString("witnesslame", model.getComplaint_witness_lname());
-                args.putString("complaint_witness_gender", model.getComplaint_witness_gender());
-                args.putString("complaint_witness_mobile", model.getComplaint_witness_mobile());
-                args.putString("complaint_witness_email", model.getComplaint_witness_email());
-                args.putString("complaint_witness_adhar", model.getComplaint_witness_adhar());
-                args.putString("complaint_witness_address", model.getComplaint_witness_address());
-                args.putString("city_name", model.getCity_name());
-                args.putString("country_name", model.getCountry_name());
-                args.putString("state_name", model.getState_name());
-                args.putString("district_name", model.getDistrict_name());
 
-//                fragment.setArguments(args);
-//                activity.getSupportFragmentManager()
-//                        .beginTransaction()
-//                        .replace(R.id.containermain, fragment)
-//                        .addToBackStack(null)
-//                        .commit();
+                WitnessDetailFragment fragment = new WitnessDetailFragment();
+
+                args.putString("witness_id", model.getComplaint_witness_id());
+//                args.putString("witnessmame", model.getComplaint_witness_mname());
+//                args.putString("witnesslame", model.getComplaint_witness_lname());
+//                args.putString("complaint_witness_gender", model.getComplaint_witness_gender());
+//                args.putString("complaint_witness_mobile", model.getComplaint_witness_mobile());
+//                args.putString("complaint_witness_email", model.getComplaint_witness_email());
+//                args.putString("complaint_witness_adhar", model.getComplaint_witness_adhar());
+//                args.putString("complaint_witness_address", model.getComplaint_witness_address());
+//                args.putString("city_name", model.getCity_name());
+//                args.putString("country_name", model.getCountry_name());
+//                args.putString("state_name", model.getState_name());
+//                args.putString("district_name", model.getDistrict_name());
+
+                fragment.setArguments(args);
+                activity.getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.containermain, fragment)
+                        .addToBackStack(null)
+                        .commit();
             }
         });
     }

@@ -38,9 +38,11 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.ltrsoft.rajashtanuserapplication.R;
+import com.ltrsoft.rajashtanuserapplication.classes.ComplaintClass;
 import com.ltrsoft.rajashtanuserapplication.classes.EvidenceClass;
 import com.ltrsoft.rajashtanuserapplication.classes.User;
 import com.ltrsoft.rajashtanuserapplication.interfaces.UserCallBack;
+import com.ltrsoft.rajashtanuserapplication.model.Complaintdeo;
 import com.ltrsoft.rajashtanuserapplication.model.EvidenceDeo;
 import com.ltrsoft.rajashtanuserapplication.utils.UserDataAccess;
 
@@ -61,7 +63,7 @@ public class AddEvidence extends Fragment {
     private static final String URL="https://rj.ltr-soft.com/public/police_api/data/complaint_photo_insert.php";
     static  String COMPLAIN_NAME_EBY_USER = "https://rj.ltr-soft.com/public/police_api/data/complaint_user_read.php";
 
-    private String encodeImage;
+    private String encodeImage ="";
     private Bitmap bitmap;
     private static final int PICK_VIDEO_REQUEST = 1;
     private ActivityResultLauncher<Intent> videoPickerLauncher;
@@ -76,6 +78,7 @@ public class AddEvidence extends Fragment {
     private Spinner complain_name;
     private ArrayList <String> listcomplain;
     private ArrayAdapter adapter;
+    public HashMap<Integer,String>hashMap=new HashMap<>();
     StringBuilder output = new StringBuilder();
     public AddEvidence() {
         // Required empty public constructor
@@ -90,7 +93,14 @@ public class AddEvidence extends Fragment {
         if (actionBar != null) {actionBar.setTitle(" Add Evidence");}
         UserDataAccess userDataAccess = new UserDataAccess();
 
-        loadComplainNameByUser(userDataAccess.getUserId(getActivity()));
+        try {
+            loadComplainNameByUser(userDataAccess.getUserId(getActivity()));
+        } catch (JSONException e) {
+
+            throw new RuntimeException(e);
+        }
+
+
         save = view.findViewById(R.id.save);
         open_camera = view.findViewById(R.id.open_camera);
         open_gallery = view.findViewById(R.id.open_gallery);
@@ -103,12 +113,13 @@ public class AddEvidence extends Fragment {
        complain_name.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
            @Override
            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-               id =String.valueOf( i);
+               id = hashMap.get(i);
+               Toast.makeText(getContext(), "id ="+id, Toast.LENGTH_SHORT).show();
            }
 
            @Override
            public void onNothingSelected(AdapterView<?> adapterView) {
-               id =String.valueOf( 1);
+            id = hashMap.get(0);
            }
        });
 
@@ -258,23 +269,44 @@ public class AddEvidence extends Fragment {
     }
 
     private void submit() {
-        final String evidance_name = this.Evidance_name.getText().toString().trim();
-        final String evidance_desc = this.Evidance_despription.getText().toString().trim();
-        EvidenceClass evidenceClass = new EvidenceClass(encodeImage,id,evidance_desc);
-        EvidenceDeo evidenceDeo = new EvidenceDeo();
 
-         evidenceDeo.createEvidence(evidenceClass, getContext(), new UserCallBack() {
-             @Override
-             public void userSuccess(Object object) {
-                 Toast.makeText(getContext(), "success"+ object, Toast.LENGTH_SHORT).show();
-                 showPositiveDialogue();
-             }
-             @Override
-             public void userError(String error) {
-                 Toast.makeText(getContext(), "error"+error.toString(), Toast.LENGTH_SHORT).show();
-                 showNagativeDiaogue();
-             }
-         });
+
+        if (!Evidance_name.getText().toString().isEmpty()){
+            if (!Evidance_despription.getText().toString().isEmpty()){
+                if (!encodeImage.toString().isEmpty()){
+                    String evidance_name = this.Evidance_name.getText().toString().trim();
+                    String evidance_desc = this.Evidance_despription.getText().toString().trim();
+
+                    Toast.makeText(getContext(), "all data is valid", Toast.LENGTH_SHORT).show();
+                    EvidenceClass evidenceClass = new EvidenceClass(encodeImage,id,evidance_desc);
+                    EvidenceDeo evidenceDeo = new EvidenceDeo();
+
+                    evidenceDeo.createEvidence(id,evidenceClass, getContext(), new UserCallBack() {
+                        @Override
+                        public void userSuccess(Object object) {
+                            Toast.makeText(getContext(), "success"+ object, Toast.LENGTH_SHORT).show();
+                            showPositiveDialogue();
+                        }
+                        @Override
+                        public void userError(String error) {
+                            Toast.makeText(getContext(), "error"+error.toString(), Toast.LENGTH_SHORT).show();
+                            showNagativeDiaogue();
+                        }
+                    });
+                }
+                else {
+                    Toast.makeText(getContext(), "please select image", Toast.LENGTH_SHORT).show();
+                }
+            }
+            else {
+                Toast.makeText(getContext(), "Evidence Description is Empty", Toast.LENGTH_SHORT).show();
+            }
+        }
+        else {
+            Toast.makeText(getContext(), "Evidence Name is Empty", Toast.LENGTH_SHORT).show();
+        }
+
+
         }
 
     private void showNagativeDiaogue() {
@@ -289,49 +321,31 @@ public class AddEvidence extends Fragment {
                 })
                 .show();
     }
-    private void loadComplainNameByUser(String userId) {
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, COMPLAIN_NAME_EBY_USER,
-                new Response.Listener<String>() {
+    private void loadComplainNameByUser(String userId) throws JSONException {
+
+
+
+        Complaintdeo complaintdeo = new Complaintdeo();
+        complaintdeo.getUserAllComplaint(new UserDataAccess().getUserId(getActivity()).toString(), getContext()
+                , new UserCallBack() {
                     @Override
-                    public void onResponse(String response) {
-                       // Toast.makeText(getContext(), "response = "+response.toString(), Toast.LENGTH_SHORT).show();
-                        Log.d("resonse",response.toString());
+                    public void userSuccess(Object object) {
                         listcomplain = new ArrayList<>();
-                        try {
-                            JSONArray jsonArray = new JSONArray(response);
-                            for (int i = 0; i < jsonArray.length() ; i++){
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                String complain_name = jsonObject.getString("complaint_subject")+jsonObject.getString("complaint_description");
-                                if (complain_name!=null) {
-                                    listcomplain.add(complain_name);
-                                }
-                            }
-                        } catch (JSONException e) {
-                            Toast.makeText(getContext(), "JSONEROR"+e.toString(), Toast.LENGTH_SHORT).show();
-                            throw new RuntimeException(e);
+                        ArrayList<ComplaintClass>list1 = (ArrayList<ComplaintClass>) object;
+                        for (int i = 0; i < list1.size() ; i ++){
+                            ComplaintClass complaintClass = list1.get(i);
+                            listcomplain.add(complaintClass.getComplaint_subject()+complaintClass.getComplaint_description());
+                            hashMap.put(i,(complaintClass.getComplaint_id()));
                         }
                         adapter = new ArrayAdapter(getContext(), android.R.layout.simple_expandable_list_item_1,listcomplain);
                         adapter.setDropDownViewResource(android.R.layout.simple_expandable_list_item_1);
                         complain_name.setAdapter(adapter);
                     }
-                }, new Response.ErrorListener() {
-            @Override
-            public void onErrorResponse(VolleyError error) {
-                Toast.makeText(getContext(), "error "+error.toString(), Toast.LENGTH_SHORT).show();
-
-            }
-        }){
-            @Nullable
-            @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                HashMap <String , String> map = new HashMap<>();
-                UserDataAccess userDataAccess = new UserDataAccess();
-                map.put("user_id",userDataAccess.getUserId(getActivity()));
-                return map;
-            }
-        };
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-        requestQueue.add(stringRequest);
+                    @Override
+                    public void userError(String error) {
+                        Toast.makeText(getContext(), "Error while loading complain", Toast.LENGTH_SHORT).show();
+                    }
+                });
     }
     private void showPositiveDialogue() {
 

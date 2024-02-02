@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.Toast;
 
@@ -26,6 +27,9 @@ import com.android.volley.VolleyError;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.ltrsoft.rajashtanuserapplication.R;
+import com.ltrsoft.rajashtanuserapplication.classes.User;
+import com.ltrsoft.rajashtanuserapplication.interfaces.UserCallBack;
+import com.ltrsoft.rajashtanuserapplication.model.Userdeo;
 import com.ltrsoft.rajashtanuserapplication.utils.UserDataAccess;
 
 import org.json.JSONArray;
@@ -42,26 +46,28 @@ public class UpdateProfile extends Fragment {
     private ImageView back;
     private   RequestQueue queue;
     private Button submit;
+    private RadioButton mal,fem;
     String genders;
     private EditText city,district,state,country,addhar,email,mobile,dob,address,fname,mname,lname;
     private static final String USER_PROFILE_READ_URL = "https://rj.ltr-soft.com/public/police_api/data/user_read.php";
     private static final String USER_PROFILE_UPDATE_URL = "https://rj.ltr-soft.com/public/police_api/data/user_update.php";
     private RadioGroup group;
+    public View view;
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.update_profile, container, false);
+        view = inflater.inflate(R.layout.update_profile, container, false);
         ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
 
         // Set the title on the ActionBar or Toolbar
         if (actionBar != null) {
             actionBar.setTitle(" Update Profile ");
         }
-
+        mal = view.findViewById(R.id.rmale);
+        fem = view.findViewById(R.id.rfemale);
         back = view.findViewById(R.id.back);
         submit = view.findViewById(R.id.submit_btn);
         group = view.findViewById(R.id.gender_id);
-
         city = view.findViewById(R.id.city);
         district = view.findViewById(R.id.district);
         state = view.findViewById(R.id.state);
@@ -107,46 +113,66 @@ public class UpdateProfile extends Fragment {
     }
 
     private void updateData() {
+        User user = new User(fname.getText().toString(),
+                mname.getText().toString(),lname.getText().toString(),address.getText().toString(),
+                "","","","","",email.getText().toString(),genders,dob.getText().toString()
+                ,mobile.getText().toString(),addhar.getText().toString(),"","","");
 
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, USER_PROFILE_UPDATE_URL,
-                response -> {
-                    Toast.makeText(getContext(), "response = "+response.toString(), Toast.LENGTH_SHORT).show();
-                    if (response.contains("success")){
-                        Toast.makeText(getContext(), "succes", Toast.LENGTH_SHORT).show();
-                        showSuccessDialogue();
-                    }
-                    else {
-                        Toast.makeText(getContext(), "update failed", Toast.LENGTH_SHORT).show();
-                    }
-                },
-                error -> {
-                    Toast.makeText(getContext(), "Volley Error = "+error.toString(), Toast.LENGTH_SHORT).show();
-                    Log.d("Error",""+error.toString());
-                }){
-            @Nullable
+        Userdeo userdeo = new Userdeo();
+        userdeo.updateUser(user, getContext(), getActivity(), new UserCallBack() {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                HashMap hashMap = new HashMap();
-                UserDataAccess userDataAccess = new UserDataAccess();
-                hashMap.put("user_id", userDataAccess.getUserId(getActivity()));
-
-                hashMap.put("user_fname",fname.getText().toString());
-                hashMap.put("user_mname",mname.getText().toString());
-                hashMap.put("user_lname",lname.getText().toString());
-                hashMap.put("user_address",address.getText().toString());
-                hashMap.put("user_email",email.getText().toString());
-                hashMap.put("user_gender",genders);
-                hashMap.put("user_dob",dob.getText().toString());
-                hashMap.put("user_mobile1",mobile.getText().toString());
-                hashMap.put("user_adhar",addhar.getText().toString());
-                hashMap.put("country_id","1");
-                hashMap.put("state_id","1");
-                hashMap.put("district_id","1");
-                hashMap.put("city_id","1");
-                return hashMap;
+            public void userSuccess(Object object) {
+                Toast.makeText(getContext(), "response"+(String) object, Toast.LENGTH_SHORT).show();
+                showSuccessDialogue();
             }
-        };
-        queue.add(stringRequest);
+            @Override
+            public void userError(String error) {
+                Toast.makeText(getContext(), "error"+error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+
+//        StringRequest stringRequest = new StringRequest(Request.Method.POST, USER_PROFILE_UPDATE_URL,
+//                response -> {
+//                    Toast.makeText(getContext(), "response = "+response.toString(), Toast.LENGTH_SHORT).show();
+//                    if (response.contains("success")){
+//                        Toast.makeText(getContext(), "succes", Toast.LENGTH_SHORT).show();
+//                        showSuccessDialogue();
+//                    }
+//                    else {
+//                        Toast.makeText(getContext(), "update failed", Toast.LENGTH_SHORT).show();
+//                    }
+//                },
+//                error -> {
+//                    Toast.makeText(getContext(), "Volley Error = "+error.toString(), Toast.LENGTH_SHORT).show();
+//                    Log.d("Error",""+error.toString());
+//                }){
+//            @Nullable
+//            @Override
+//            protected Map<String, String> getParams() throws AuthFailureError {
+//                HashMap hashMap = new HashMap();
+//                UserDataAccess userDataAccess = new UserDataAccess();
+//                hashMap.put("user_id", userDataAccess.getUserId(getActivity()));
+//
+//                hashMap.put("user_fname",fname.getText().toString());
+//                hashMap.put("user_mname",mname.getText().toString());
+//                hashMap.put("user_lname",lname.getText().toString());
+//                hashMap.put("user_address",address.getText().toString());
+//                hashMap.put("user_email",email.getText().toString());
+//                hashMap.put("user_gender",genders);
+//                hashMap.put("user_dob",dob.getText().toString());
+//                hashMap.put("user_mobile1",mobile.getText().toString());
+//                hashMap.put("user_adhar",addhar.getText().toString());
+//                hashMap.put("country_id","1");
+//                hashMap.put("state_id","1");
+//                hashMap.put("district_id","1");
+//                hashMap.put("city_id","1");
+//
+//
+//                return hashMap;
+//            }
+//        };
+//        queue.add(stringRequest);
     }
 
     private void showSuccessDialogue() {
@@ -165,75 +191,105 @@ public class UpdateProfile extends Fragment {
     }
 
     private void loaddata() {
-
-
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, USER_PROFILE_READ_URL,
-                new Response.Listener<String>() {
-                    @Override
-                    public void onResponse(String response) {
-                        System.out.println("response = "+response.toString());
-                        if (response!=null){
-                            //Toast.makeText(getContext(), "response = "+response.toString(), Toast.LENGTH_SHORT).show();
-                            try {
-                                JSONArray jsonArray = new JSONArray(response);
-                                for (int i = 0 ; i < jsonArray.length() ; i++) {
-                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                    String user_fname = jsonObject.getString("user_fname");
-                                    String user_mname = jsonObject.getString("user_mname");
-                                    String user_lname = jsonObject.getString("user_lname");
-                                    String user_address = jsonObject.getString("user_address");
-                                    //String user_photo = jsonObject.getString("user_fname");
-                                    String country_id = jsonObject.getString("country_name");
-                                    String state_id = jsonObject.getString("state_name");
-                                    String user_email = jsonObject.getString("user_email");
-                                    String user_gender = jsonObject.getString("user_gender");
-                                    String user_dob = jsonObject.getString("user_dob");
-                                    String user_mobile1 = jsonObject.getString("user_mobile1");
-                                    String user_adhar = jsonObject.getString("user_adhar");
-                                    String city_id = jsonObject.getString("city_name");
-                                    String district_id = jsonObject.getString("district_name");
-
-                                    state.setText(state_id);
-                                    city.setText(city_id);
-                                    district.setText(district_id);
-                                    country.setText(country_id);
-                                    addhar.setText(user_adhar);
-                                    email.setText(user_email);
-                                    mobile.setText(user_mobile1);
-                                    if (user_gender.equalsIgnoreCase("male")) {
-                                        group.check(R.id.rmale);
-                                    }else {
-                                        group.check(R.id.rfemale);
-                                    }
-                                    dob.setText(user_dob);
-                                    address.setText(user_address);
-                                    fname.setText(user_fname);
-                                    mname.setText(user_mname);
-                                    lname.setText(user_lname);
-                                }
-                            } catch (JSONException e) {
-                                Toast.makeText(getContext(), "json error"+e.toString(), Toast.LENGTH_SHORT).show();
-                                throw new RuntimeException(e);
-                            }
-                        }
-                    }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        Toast.makeText(getContext(), "error "+error.toString(), Toast.LENGTH_SHORT).show();
-                    }
-                }){
-            @Nullable
+        Userdeo userdeo = new Userdeo();
+        UserDataAccess userDataAccess = new UserDataAccess();
+        userdeo.getUser(userDataAccess.getUserId(getActivity()), getContext(), new UserCallBack() {
             @Override
-            protected Map<String, String> getParams() throws AuthFailureError {
-                HashMap hashMap = new HashMap();
-               UserDataAccess userDataAccess = new UserDataAccess();
-                hashMap.put("user_id", userDataAccess.getUserId(getActivity()));
-                return hashMap;
+            public void userSuccess(Object object) {
+                User user =  (User) object;
+                state.setText(user.getState_name());
+                city.setText(user.getCity_name());
+                district.setText(user.getDistrict_name());
+                country.setText(user.getCountry_name());
+                addhar.setText(user.getUser_adhar());
+                email.setText(user.getUser_email());
+                mobile.setText(user.getUser_mobile1());
+//                gender.setText(user.getUser_gender());
+                if (user.getUser_gender().equalsIgnoreCase("male")){
+                    mal.setChecked(true);
+                }
+                else {
+                    fem.setChecked(true);
+                }
+                dob.setText(user.getUser_dob());
+                address.setText(user.getUser_address());
+                fname.setText(user.getUser_fname());
+                mname.setText(user.getUser_mname());
+                lname.setText(user.getUser_lname());
             }
-        };
-        queue.add(stringRequest);
+            @Override
+            public void userError(String error) {
+                Toast.makeText(getContext(), "error"+error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+
+//        StringRequest stringRequest = new StringRequest(Request.Method.POST, USER_PROFILE_READ_URL,
+//                new Response.Listener<String>() {
+//                    @Override
+//                    public void onResponse(String response) {
+//                        System.out.println("response = "+response.toString());
+//                        if (response!=null){
+//                            //Toast.makeText(getContext(), "response = "+response.toString(), Toast.LENGTH_SHORT).show();
+//                            try {
+//                                JSONArray jsonArray = new JSONArray(response);
+//                                for (int i = 0 ; i < jsonArray.length() ; i++) {
+//                                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+//                                    String user_fname = jsonObject.getString("user_fname");
+//                                    String user_mname = jsonObject.getString("user_mname");
+//                                    String user_lname = jsonObject.getString("user_lname");
+//                                    String user_address = jsonObject.getString("user_address");
+//                                    //String user_photo = jsonObject.getString("user_fname");
+//                                    String country_id = jsonObject.getString("country_name");
+//                                    String state_id = jsonObject.getString("state_name");
+//                                    String user_email = jsonObject.getString("user_email");
+//                                    String user_gender = jsonObject.getString("user_gender");
+//                                    String user_dob = jsonObject.getString("user_dob");
+//                                    String user_mobile1 = jsonObject.getString("user_mobile1");
+//                                    String user_adhar = jsonObject.getString("user_adhar");
+//                                    String city_id = jsonObject.getString("city_name");
+//                                    String district_id = jsonObject.getString("district_name");
+//
+//                                    state.setText(state_id);
+//                                    city.setText(city_id);
+//                                    district.setText(district_id);
+//                                    country.setText(country_id);
+//                                    addhar.setText(user_adhar);
+//                                    email.setText(user_email);
+//                                    mobile.setText(user_mobile1);
+//                                    if (user_gender.equalsIgnoreCase("male")) {
+//                                        group.check(R.id.rmale);
+//                                    }else {
+//                                        group.check(R.id.rfemale);
+//                                    }
+//                                    dob.setText(user_dob);
+//                                    address.setText(user_address);
+//                                    fname.setText(user_fname);
+//                                    mname.setText(user_mname);
+//                                    lname.setText(user_lname);
+//                                }
+//                            } catch (JSONException e) {
+//                                Toast.makeText(getContext(), "json error"+e.toString(), Toast.LENGTH_SHORT).show();
+//                                throw new RuntimeException(e);
+//                            }
+//                        }
+//                    }
+//                },
+//                new Response.ErrorListener() {
+//                    @Override
+//                    public void onErrorResponse(VolleyError error) {
+//                        Toast.makeText(getContext(), "error "+error.toString(), Toast.LENGTH_SHORT).show();
+//                    }
+//                }){
+//            @Nullable
+//            @Override
+//            protected Map<String, String> getParams() throws AuthFailureError {
+//                HashMap hashMap = new HashMap();
+//               UserDataAccess userDataAccess = new UserDataAccess();
+//                hashMap.put("user_id", userDataAccess.getUserId(getActivity()));
+//                return hashMap;
+//            }
+//        };
+//        queue.add(stringRequest);
 
     }
 }

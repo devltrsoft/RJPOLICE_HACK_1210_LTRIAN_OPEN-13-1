@@ -75,8 +75,6 @@ public class Login extends Fragment {
                         @Override
                         public void userSuccess(Object object) {
                             String userId = (String) object;
-
-                          //  Toast.makeText(getContext(), "Login success = "+userId.toString(), Toast.LENGTH_SHORT).show();
                             UserDataAccess dataAccess = new UserDataAccess();
                             dataAccess.setUserId(userId,getActivity());
 
@@ -84,11 +82,9 @@ public class Login extends Fragment {
                             SharedPreferences.Editor editor = pref.edit();
                             editor.putBoolean("flag", true)
                                     .apply();
-
                             Intent main_activity_intent = new Intent(getContext(), MainActivity.class);
                             startActivity(main_activity_intent);
                         }
-
                         @Override
                         public void userError(String error) {
                             Toast.makeText(getContext(), "error "+error.toString(), Toast.LENGTH_SHORT).show();

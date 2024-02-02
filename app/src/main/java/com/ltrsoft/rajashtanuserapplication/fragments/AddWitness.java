@@ -1,5 +1,4 @@
 package com.ltrsoft.rajashtanuserapplication.fragments;
-
 import static com.ltrsoft.rajashtanuserapplication.fragments.AddEvidence.COMPLAIN_NAME_EBY_USER;
 
 import android.Manifest;
@@ -46,8 +45,10 @@ import com.android.volley.toolbox.JsonArrayRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.ltrsoft.rajashtanuserapplication.R;
+import com.ltrsoft.rajashtanuserapplication.classes.ComplaintClass;
 import com.ltrsoft.rajashtanuserapplication.classes.WitnessClass;
 import com.ltrsoft.rajashtanuserapplication.interfaces.UserCallBack;
+import com.ltrsoft.rajashtanuserapplication.model.Complaintdeo;
 import com.ltrsoft.rajashtanuserapplication.model.Userdeo;
 import com.ltrsoft.rajashtanuserapplication.model.Witnessdeo;
 import com.ltrsoft.rajashtanuserapplication.utils.UserDataAccess;
@@ -66,7 +67,6 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.HashMap;
 import java.util.Map;
-
 public class AddWitness extends Fragment {
     private final int CAMERA_REQ_CODE = 104;
     private final int GALLERY_REQ_CODE = 105;
@@ -91,14 +91,14 @@ public class AddWitness extends Fragment {
     HashMap <Integer,String> statecode=new HashMap<>();
     HashMap <Integer,String> districtcode=new HashMap<>();
     HashMap <Integer,String> citycode=new HashMap<>();
+    HashMap <Integer,String> hashMap=new HashMap<>();
 
     public static  final String URL1 ="https://rj.ltr-soft.com/public/police_api/country/select_country.php ";
     public static  final String URL2 ="https://rj.ltr-soft.com/public/police_api/state/select_state.php";
     public static  final String URL3 ="https://rj.ltr-soft.com/public/police_api/district/select_district.php";
     public static  final String URL4 ="https://rj.ltr-soft.com/public/police_api/city/select_city.php";
     private String encodeImage;
-    StringBuilder output = new StringBuilder();
-    String complainid="1";
+    String complainid;
 
     private String URL = "https://rj.ltr-soft.com/public/police_api/data/complaint_witness_insert.php";
 
@@ -129,16 +129,21 @@ public class AddWitness extends Fragment {
         back_image=view.findViewById(R.id.back_image);
         complain_names = view.findViewById(R.id.complain_name);
         UserDataAccess userDataAccess = new UserDataAccess();
-        loadComplainNameByUser(userDataAccess.getUserId(getActivity()));
+        try {
+            loadComplainNameByUser(userDataAccess.getUserId(getActivity()));
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
+
+
         complain_names.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                complainid = String.valueOf(i);
+                complainid = hashMap.get(i);
             }
-
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                complainid = "1";
+                complainid = hashMap.get(0);
             }
         });
 
@@ -277,8 +282,6 @@ public class AddWitness extends Fragment {
                     @Override
                     protected Map<String, String> getParams() throws AuthFailureError {
                         HashMap<String, String> hashMap = new HashMap<>();
-                        // hashMap.put("state_id", "state-12");
-                        // hashMap.put("state_id",statecode.get(i));
                         hashMap.put("state_id","1");
                         return hashMap;
                     }
@@ -386,9 +389,6 @@ public class AddWitness extends Fragment {
             @Override
             public void onClick(View v) {
                 save();
-//                Adding_complain_detail adding_complain_detail=new Adding_complain_detail();
-//                getFragmentManager(). beginTransaction().replace(R.id.containers, adding_complain_detail  ).addToBackStack(null).commit();
-
             }
         });
 
@@ -498,38 +498,100 @@ public class AddWitness extends Fragment {
     }
 
     private void save() {
+        if (!name.getText().toString().isEmpty()){
+            if (!address.getText().toString().isEmpty()){
+                if (gender.getCheckedRadioButtonId()!=-1){
+                    if (!contact.getText().toString().isEmpty()){
+                        if (!dob.getText().toString().isEmpty()){
+                            if (!email.getText().toString().isEmpty()){
+                                if (!addhar.getText().toString().isEmpty()){
+                                    if (!encodeImage.isEmpty()){
+                                        Toast.makeText(getContext(), "All data is valid", Toast.LENGTH_SHORT).show();
+                                         String name1 = this.name.getText().toString().trim();
+                                         String address1=this.address.getText().toString().trim();
+                                         String country1 = this.country.toString().trim();
+                                         String state1 = this.state.toString().trim();
+                                         String district1 = this.district.toString().trim();
+                                         String city1 = this.city.toString().trim();
+                                         String email1 = this.email.getText().toString().trim();
+                                         String dob1 = this.dob.getText().toString().trim();
+                                         String mobile1 = this.contact.getText().toString().trim();
+                                         String addhar1 = this.addhar.getText().toString().trim();
+                                        String gender = male.isChecked() ? "Male" : "Female";
+                                        WitnessClass witnessClass = new WitnessClass("",name1,name1,name1,
+                                                address1,city1,country1,state1,district1,dob1,gender,mobile1,email1,encodeImage,"",addhar1,complainid,"");
+                                        Witnessdeo witnessdeo = new Witnessdeo();
+                                        witnessdeo.createWitness(complainid,witnessClass, getContext(), new UserCallBack() {
+                                            @Override
+                                            public void userSuccess(Object object) {
+                                                Toast.makeText(getContext(), "result"+object, Toast.LENGTH_SHORT).show();
+                                                showPositiveDialogue();
+                                            }
 
-        final String name1 = this.name.getText().toString().trim();
-        final String address1=this.address.getText().toString().trim();
-        final String country1 = this.country.toString().trim();
-        final String state1 = this.state.toString().trim();
-        final String district1 = this.district.toString().trim();
-        final String city1 = this.city.toString().trim();
-        final String email1 = this.email.getText().toString().trim();
-        final String dob1 = this.dob.getText().toString().trim();
-        final String mobile1 = this.contact.getText().toString().trim();
-        final String addhar1 = this.addhar.getText().toString().trim();
-         String gender = male.isChecked() ? "Male" : "Female";
-        WitnessClass witnessClass = new WitnessClass("",name1,name1,name1,
-                address1,city1,country1,state1,district1,dob1,gender,mobile1,email1,encodeImage,"",addhar1,"","");
-        Witnessdeo witnessdeo = new Witnessdeo();
-        witnessdeo.createWitness(witnessClass, getContext(), new UserCallBack() {
-            @Override
-            public void userSuccess(Object object) {
-             //   Toast.makeText(getContext(), "result"+object, Toast.LENGTH_SHORT).show();
-                showPositiveDialogue();
+                                            @Override
+                                            public void userError(String error) {
+                                                Toast.makeText(getContext(), "error"+error.toString(), Toast.LENGTH_SHORT).show();
+                                                showNagativeDiaogue();
+                                            }
+                                        });
+                                    }
+                                    else {
+                                        Toast.makeText(getContext(), "please select image", Toast.LENGTH_SHORT).show();
+                                    }
+                                }
+                                else {
+                                    Toast.makeText(getContext(), "please enter adhar", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                            else {
+                                Toast.makeText(getContext(), "please enter email", Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                        else {
+                            Toast.makeText(getContext(), "please enter date of birth", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                    else {
+                        Toast.makeText(getContext(), "please enter contact", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                else {
+                    Toast.makeText(getContext(), "please select gender", Toast.LENGTH_SHORT).show();
+                }
             }
-
-            @Override
-            public void userError(String error) {
-                Toast.makeText(getContext(), "error"+error.toString(), Toast.LENGTH_SHORT).show();
-            showNagativeDiaogue();
+            else {
+                Toast.makeText(getContext(), "please adress name", Toast.LENGTH_SHORT).show();
             }
-        });
-
+        }
+        else {
+            Toast.makeText(getContext(), "please enter name", Toast.LENGTH_SHORT).show();
+        }
 
     }
-    private void loadComplainNameByUser(String userId) {
+    private void loadComplainNameByUser(String userId) throws JSONException {
+
+        Complaintdeo complaintdeo = new Complaintdeo();
+        complaintdeo.getUserAllComplaint(new UserDataAccess().getUserId(getActivity()).toString(), getContext()
+                , new UserCallBack() {
+                    @Override
+                    public void userSuccess(Object object) {
+                        listcomplain = new ArrayList<>();
+                        ArrayList<ComplaintClass>list1 = (ArrayList<ComplaintClass>) object;
+                        for (int i = 0; i < list1.size() ; i ++){
+                            ComplaintClass complaintClass = list1.get(i);
+                            listcomplain.add(complaintClass.getComplaint_subject()+complaintClass.getComplaint_description());
+                            hashMap.put(i,(complaintClass.getComplaint_id()));
+                        }
+                        adapter = new ArrayAdapter(getContext(), android.R.layout.simple_expandable_list_item_1,listcomplain);
+                        adapter.setDropDownViewResource(android.R.layout.simple_expandable_list_item_1);
+                        complain_names.setAdapter(adapter);
+                    }
+                    @Override
+                    public void userError(String error) {
+                        Toast.makeText(getContext(), "Error while loading complain", Toast.LENGTH_SHORT).show();
+                    }
+                });
+
 
         StringRequest stringRequest = new StringRequest(Request.Method.POST, COMPLAIN_NAME_EBY_USER,
                 new Response.Listener<String>() {
@@ -563,13 +625,13 @@ public class AddWitness extends Fragment {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 HashMap <String , String> map = new HashMap<>();
-                map.put("user_id","1");
-//                map.put("user_id",output.toString());
+//                map.put("user_id","1");
+                map.put("user_id",new UserDataAccess().getUserId(getActivity()).toString());
                 return map;
             }
         };
-        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-        requestQueue.add(stringRequest);
+//        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
+//        requestQueue.add(stringRequest);
 
     }
     private void showNagativeDiaogue() {

@@ -1,6 +1,7 @@
 package com.ltrsoft.rajashtanuserapplication.fragments;
 
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,27 +11,44 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.ltrsoft.rajashtanuserapplication.Adapter.SuspectAdapter;
+import com.android.volley.AuthFailureError;
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonArrayRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
+import com.ltrsoft.rajashtanuserapplication.Adapter.VictimAdapter;
 import com.ltrsoft.rajashtanuserapplication.R;
 import com.ltrsoft.rajashtanuserapplication.classes.ComplaintClass;
-import com.ltrsoft.rajashtanuserapplication.classes.SuspectClass;
+import com.ltrsoft.rajashtanuserapplication.classes.VictimClass;
 import com.ltrsoft.rajashtanuserapplication.interfaces.UserCallBack;
 import com.ltrsoft.rajashtanuserapplication.model.Complaintdeo;
-import com.ltrsoft.rajashtanuserapplication.model.SuspectDeo;
+import com.ltrsoft.rajashtanuserapplication.model.Victimdeo;
 import com.ltrsoft.rajashtanuserapplication.utils.UserDataAccess;
 
+import org.json.JSONArray;
 import org.json.JSONException;
+import org.json.JSONObject;
 
+import java.io.FileInputStream;
+import java.io.InputStreamReader;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
-public class SuspectPage extends Fragment {
+public class VictimPage extends Fragment {
+
     private RecyclerView recyclerView;
-    ArrayList<SuspectClass> list ;
+    ArrayList<VictimClass> list = new ArrayList<>();
     public TextView textView;
     public Spinner complaints;
     public ArrayList<String>listcomplain= new ArrayList<>();
@@ -39,25 +57,33 @@ public class SuspectPage extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.suspect_page, container, false);
-        recyclerView = view.findViewById(R.id.investigation_recycler);
-        textView = view.findViewById(R.id.stv);
-        complaints = view.findViewById(R.id.scspin);
+        View view = inflater.inflate(R.layout.victim_page, container, false);
+        recyclerView = view.findViewById(R.id.vrecycle);
+        textView = view.findViewById(R.id.vtv);
+        complaints = view.findViewById(R.id.vcspin);
+        ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
 
+        if (actionBar != null) {
+            actionBar.setTitle(" Victim History Detail ");
+        }
+        if (list!=null){
+            list.clear();
+        }
         complaints.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
                 String complain_id = map.get(i);
-                Toast.makeText(getContext(), ""+complain_id, Toast.LENGTH_SHORT).show();
-                loadSuspect(complain_id);
+                loadVictims(complain_id);
             }
+
             @Override
             public void onNothingSelected(AdapterView<?> adapterView) {
-                if (!map.isEmpty()){
-                loadSuspect(map.get(0));
-                }
+            if (!map.isEmpty()){
+                loadVictims(map.get(0));
+            }
             }
         });
+
         UserDataAccess access = new UserDataAccess();
         Complaintdeo complaintdeo = new Complaintdeo();
         try {
@@ -79,54 +105,55 @@ public class SuspectPage extends Fragment {
                         showNoComplaint();
                     }
                 }
-
                 @Override
                 public void userError(String error) {
                     Toast.makeText(getContext(), "error "+error.toString(), Toast.LENGTH_SHORT).show();
+                    showError("complaint Error"+error.toString());
                 }
             });
         } catch (JSONException e) {
             Toast.makeText(getContext(), "error "+e.toString(), Toast.LENGTH_SHORT).show();
+            showError("complaint Error"+e.toString());
             throw new RuntimeException(e);
         }
+
         return view;
     }
-    private void loadSuspect(String complainId) {
-        SuspectDeo suspectDeo = new SuspectDeo();
-        suspectDeo.getAllSuspect(complainId, getContext(), new UserCallBack() {
+    private void loadVictims(String complainId) {
+        Victimdeo victimdeo = new Victimdeo();
+        victimdeo.getAllVVictim(complainId, getContext(), new UserCallBack() {
             @Override
             public void userSuccess(Object object) {
-                list  = (  ArrayList<SuspectClass>)object;
-                //   Toast.makeText(getContext(), "list "+list.toString(), Toast.LENGTH_SHORT).show();
-                if (!list.isEmpty()) {
-                    SuspectAdapter adapter = new SuspectAdapter(list);
+                ArrayList<VictimClass>list1 = (ArrayList<VictimClass>) object;
+                if (!list1.isEmpty()) {
+                    VictimAdapter adapter = new VictimAdapter(list1);
                     LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
                     recyclerView.setLayoutManager(layoutManager);
                     recyclerView.setAdapter(adapter);
                 }
                 else {
-//                    Toast.makeText(getContext(), "You Have no Compaint ", Toast.LENGTH_SHORT).show();
-                    showNOSuspect();
+                    showNoVictim();
                 }
             }
             @Override
             public void userError(String error) {
-                Toast.makeText(getContext(), "error"+error.toString(), Toast.LENGTH_SHORT).show();
-              showError("Suspect"+"  Error "+error.toString());
+                Toast.makeText(getContext(), "error = "+error.toString(), Toast.LENGTH_SHORT).show();
+                showError("victim Error "+error.toString());
             }
         });
     }
     private void showNoComplaint() {
+
         recyclerView.setVisibility(View.GONE);
         complaints.setVisibility(View.GONE);
         textView.setVisibility(View.VISIBLE);
         textView.setText("You have no complaints register");
     }
-    private void showNOSuspect() {
+    private void showNoVictim() {
         recyclerView.setVisibility(View.GONE);
         complaints.setVisibility(View.VISIBLE);
         textView.setVisibility(View.VISIBLE);
-        textView.setText("This complaint have no suspect select other");
+        textView.setText("This complaint have no suspect");
     }
     private void showError(String s){
         recyclerView.setVisibility(View.GONE);

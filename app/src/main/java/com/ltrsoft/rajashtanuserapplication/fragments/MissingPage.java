@@ -57,65 +57,10 @@ public class MissingPage extends Fragment {
                 person_card_recycler.setLayoutManager(layoutManager);
                 person_card_recycler.setAdapter(adapter);
             }
-
             @Override
             public void userError(String error) {
                 Toast.makeText(getContext(), "error"+error.toString(), Toast.LENGTH_SHORT).show();
             }
         });
-
-
-//        list.add(new Missing_person_class(1,"ganesh","lost to heavean","99999","latur"));
-//        Missing_person_Adapter adapter=new Missing_person_Adapter(list);
-//        LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
-//        person_card_recycler.setLayoutManager(layoutManager);
-//        person_card_recycler.setAdapter(adapter);
-
-//        StringRequest stringRequest=new StringRequest(Request.Method.POST, URl,
-//                new Response.Listener<String>() {
-//                    @Override
-//                    public void onResponse(String response) {
-//                        Log.d("response",""+response.toString());
-//                        Toast.makeText(getContext(), "response = "+response.toString(), Toast.LENGTH_SHORT).show();
-//                        try {
-//                            JSONArray jsonArray = new JSONArray(response);
-//
-//                            for (int i = 0 ;i < jsonArray.length() ; i++){
-//                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-//
-//                                //int person_image;
-//
-//                                String person_name = jsonObject.getString("complaint_subject");
-//                                String person_description = jsonObject.getString("complaint_description");
-//                                String person_contact = jsonObject.getString("user_mobile1");
-//                                String person_location = jsonObject.getString("user_address");
-//
-//                                list.add(new Missing_person_class(R.id.missing_person_pic,person_name,person_description,person_contact,person_location));
-//                            }
-//
-//                        } catch (JSONException e) {
-//                            Toast.makeText(getContext(), "json error"+e.toString(), Toast.LENGTH_SHORT).show();
-//                            throw new RuntimeException(e);
-//                        }
-////                        Missing_person_Adapter adapter=new Missing_person_Adapter(list);
-////                        LinearLayoutManager layoutManager=new LinearLayoutManager(getContext());
-////                        person_card_recycler.setLayoutManager(layoutManager);
-////                        person_card_recycler.setAdapter(adapter);
-//                    }
-//                }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Toast.makeText(getContext() ,"volley error"+error.toString(), Toast.LENGTH_SHORT).show();
-//
-//            }
-//        }){
-//            @Override
-//            protected Map<String, String> getParams() throws AuthFailureError {
-//                Map<String, String> param = new HashMap<>();
-//                return param;
-//            }
-//        };
-//        RequestQueue requestQueue = Volley.newRequestQueue(getContext());
-//        requestQueue.add(stringRequest);
     }
 }

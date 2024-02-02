@@ -22,9 +22,13 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.ltrsoft.rajashtanuserapplication.R;
+import com.ltrsoft.rajashtanuserapplication.classes.WitnessClass;
+import com.ltrsoft.rajashtanuserapplication.interfaces.UserCallBack;
+import com.ltrsoft.rajashtanuserapplication.model.Witnessdeo;
 import com.squareup.picasso.Picasso;
 
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 
 public class WitnessDetailFragment extends Fragment {
     private TextView wid, wfname, wmname, wlname, waddress, wdob,wgender,wsub,email;
@@ -66,25 +70,40 @@ public class WitnessDetailFragment extends Fragment {
         district_name = v.findViewById(R.id.district);
         adhar = v.findViewById(R.id.addhar);
         Bundle bundle = getArguments();
-        if (bundle != null) {
-        wfname.setText(bundle.getString("witnessfame"));
-        wmname.setText(bundle.getString("witnessfame"));
-            wlname.setText(    bundle.getString("witnessmame"));
-            waddress.setText(  bundle.getString("witnesslame"));
-            wdob.setText(  bundle.getString("witnessfame"));
-            wgender.setText(  bundle.getString("complaint_witness_gender"));
-            wsub.setText(   bundle.getString("complaint_witness_mobile"));
-            email.setText( bundle.getString("complaint_witness_email"));
-            city_name.setText( bundle.getString("city_name"));
-            country_name.setText( bundle.getString("country_name"));
-            state_name.setText( bundle.getString("state_name"));
-            district_name.setText( bundle.getString("district_name"));
+            String witness_id = bundle.getString("witness_id");
+//            Toast.makeText(getContext(), "witness id", Toast.LENGTH_SHORT).show();
 
-            String imageUrl = bundle.getString("imag");
-            if (imageUrl != null) {
-                Picasso.get().load(imageUrl).into(imageView);
-            }
-        }
+            Witnessdeo witnessdeo = new Witnessdeo();
+            witnessdeo.getWitness(witness_id, getContext(), new UserCallBack() {
+                @Override
+                public void userSuccess(Object object) {
+                    ArrayList<WitnessClass>list = (ArrayList<WitnessClass>) object;
+                    Toast.makeText(getContext(), "size = "+list.size(), Toast.LENGTH_SHORT).show();
+                    for (int i = 0 ; i < list.size() ; i ++){
+                        WitnessClass witnessClass = list.get(i);
+                        wfname.setText(witnessClass.getComplaint_witness_fname());
+                        wmname.setText(witnessClass.getComplaint_witness_mname());
+                        wlname.setText( witnessClass.getComplaint_witness_lname());
+                        waddress.setText( witnessClass.getComplaint_witness_address() );
+                        wdob.setText( witnessClass.getComplaint_witness_dob());
+                        wgender.setText( witnessClass.getComplaint_witness_gender());
+                        wsub.setText( witnessClass.getComplaint_witness_mobile() );
+                        email.setText(witnessClass.getComplaint_witness_email());
+                        city_name.setText( witnessClass.getCity_name());
+                        country_name.setText( witnessClass.getCountry_name());
+                        state_name.setText( witnessClass.getState_name());
+                        district_name.setText( witnessClass.getDistrict_name());
+                    }
+                }
+                @Override
+                public void userError(String error) {
+                    Toast.makeText(getContext(), "error = "+error.toString(), Toast.LENGTH_SHORT).show();
+                }
+            });
+//            String imageUrl = bundle.getString("imag");
+//            if (imageUrl != null) {
+//                Picasso.get().load(imageUrl).into(imageView);
+//            }
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

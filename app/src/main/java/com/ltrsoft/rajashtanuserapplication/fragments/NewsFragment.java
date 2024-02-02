@@ -71,38 +71,6 @@ public class NewsFragment extends Fragment {
                 if (list != null) {
                     list.clear();
                 }
-//                JsonArrayRequest request = new JsonArrayRequest(Request.Method.POST, NEWS_READ_URL, null, new Response.Listener<JSONArray>() {
-//                    @Override
-//                    public void onResponse(JSONArray response) {
-//                        for (int i = 0; i < response.length(); i++) {
-//                            try {
-//                                JSONObject jsonObject = response.getJSONObject(i);
-//
-//                                String news_title = jsonObject.getString("news_title");
-//                                String news_description = jsonObject.getString("news_description");
-//                                String news_date = jsonObject.getString("news_date");
-//                                String news_category_name = jsonObject.getString("news_category_name");
-//                                String news_photo_path = jsonObject.getString("news_photo_path"); // Assuming this is the photo path
-//
-//                                list.add(new News(news_title, news_description, news_date, news_category_name, news_photo_path));
-
-//
-//                            } catch (JSONException e) {
-//                                Log.d("error = ", " error " + e.toString());
-//                                Toast.makeText(getContext(), "json exception", Toast.LENGTH_SHORT).show();
-//                                throw new RuntimeException(e);
-//                            }
-//                        }
-//                    }
-//                }, new Response.ErrorListener() {
-//                    @Override
-//                    public void onErrorResponse(VolleyError error) {
-//                        Log.d("error = ", " error " + error.toString());
-//                        Toast.makeText(getContext(), "error = " + error.toString(), Toast.LENGTH_SHORT).show();
-//                    }
-//                });
-//                RequestQueue queue = Volley.newRequestQueue(getContext());
-//                queue.add(request);
 
                 return view;
             }

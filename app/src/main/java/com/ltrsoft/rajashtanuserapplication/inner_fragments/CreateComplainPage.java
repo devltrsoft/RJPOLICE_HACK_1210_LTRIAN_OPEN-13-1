@@ -60,7 +60,7 @@ public class CreateComplainPage extends Fragment {
         witness_txt=view.findViewById(R.id.witness_txt);
         victim_txt=view.findViewById(R.id.victim_txt);
 
-        language();
+//        language();
 // Access the hosting activity and get the ActionBar
         ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
 
@@ -111,97 +111,97 @@ public class CreateComplainPage extends Fragment {
         return view;
     }
 
-    private void language() {
-        try {
-            FileInputStream fin = getActivity().openFileInput(filelang);
-            int a;
-            StringBuilder temp = new StringBuilder();
-            while ((a = fin.read()) != -1) {
-                temp.append((char) a);
-            }
-            lang=temp.toString();
-            fin.close();
-        } catch (IOException e) {
-            Toast.makeText(getContext(), "error = "+e.toString(), Toast.LENGTH_SHORT).show();
-            e.printStackTrace();
-        }
-
-        if (lang!=null){
-
-            TranslateOptions options = TranslateOptions.newBuilder().setApiKey("AIzaSyBgppIX4LGhGETm5dp0xPWNEqnFfIPmnOo").build();
-            Translate translate = options.getService();
-
-            Thread gfgThread=new Thread(new Runnable() {
-                @Override
-                public void run() {
-
-                    try {
-                        textToTranslate = complaint_txt.getText().toString();
-                        Translation translation = translate.translate(textToTranslate, Translate.TranslateOption.targetLanguage(lang));
-                        translatedText = translation.getTranslatedText();
-
-                        getActivity().runOnUiThread(new Runnable() {
-                            @Override
-                            public void run() {
-                                complaint_txt.setText(translatedText);
-                            }
-                        });
-
-                        textToTranslate1 = suspect_txt.getText().toString();
-                        Translation translation1 = translate.translate(textToTranslate1, Translate.TranslateOption.targetLanguage(lang));
-                        translatedText1 = translation1.getTranslatedText();
-
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    suspect_txt.setText(translatedText1);
-                                }
-                            });
-
-                            textToTranslate2=evidence_txt.getText().toString();
-                            Translation translation2=translate.translate(textToTranslate2,Translate.TranslateOption.targetLanguage(lang));
-                            translatedText2=translation2.getTranslatedText();
-
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                   evidence_txt.setText(translatedText2);
-                                }
-                            });
-
-                            textToTranslate3=witness_txt.getText().toString();
-                            Translation translation3=translate.translate(textToTranslate3,Translate.TranslateOption.targetLanguage(lang));
-                            translatedText3=translation3.getTranslatedText();
-
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    witness_txt.setText(translatedText3);
-                                }
-                            });
-
-                            textToTranslate4=victim_txt.getText().toString();
-                            Translation translation4=translate.translate(textToTranslate4,Translate.TranslateOption.targetLanguage(lang));
-                            translatedText4=translation4.getTranslatedText();
-
-                            getActivity().runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    victim_txt.setText(translatedText4);
-                                }
-                            });
-
-
-                    } catch (Exception e) {
-                        e.printStackTrace();
-                    }
-                }
-            });
-            gfgThread.start();
-
-        }
-
-    }
+//    private void language() {
+//        try {
+//            FileInputStream fin = getActivity().openFileInput(filelang);
+//            int a;
+//            StringBuilder temp = new StringBuilder();
+//            while ((a = fin.read()) != -1) {
+//                temp.append((char) a);
+//            }
+//            lang=temp.toString();
+//            fin.close();
+//        } catch (IOException e) {
+//            Toast.makeText(getContext(), "error = "+e.toString(), Toast.LENGTH_SHORT).show();
+//            e.printStackTrace();
+//        }
+//
+//        if (lang!=null){
+//
+//            TranslateOptions options = TranslateOptions.newBuilder().setApiKey("AIzaSyBgppIX4LGhGETm5dp0xPWNEqnFfIPmnOo").build();
+//            Translate translate = options.getService();
+//
+//            Thread gfgThread=new Thread(new Runnable() {
+//                @Override
+//                public void run() {
+//
+//                    try {
+//                        textToTranslate = complaint_txt.getText().toString();
+//                        Translation translation = translate.translate(textToTranslate, Translate.TranslateOption.targetLanguage(lang));
+//                        translatedText = translation.getTranslatedText();
+//
+//                        getActivity().runOnUiThread(new Runnable() {
+//                            @Override
+//                            public void run() {
+//                                complaint_txt.setText(translatedText);
+//                            }
+//                        });
+//
+//                        textToTranslate1 = suspect_txt.getText().toString();
+//                        Translation translation1 = translate.translate(textToTranslate1, Translate.TranslateOption.targetLanguage(lang));
+//                        translatedText1 = translation1.getTranslatedText();
+//
+//                            getActivity().runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    suspect_txt.setText(translatedText1);
+//                                }
+//                            });
+//
+//                            textToTranslate2=evidence_txt.getText().toString();
+//                            Translation translation2=translate.translate(textToTranslate2,Translate.TranslateOption.targetLanguage(lang));
+//                            translatedText2=translation2.getTranslatedText();
+//
+//                            getActivity().runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                   evidence_txt.setText(translatedText2);
+//                                }
+//                            });
+//
+//                            textToTranslate3=witness_txt.getText().toString();
+//                            Translation translation3=translate.translate(textToTranslate3,Translate.TranslateOption.targetLanguage(lang));
+//                            translatedText3=translation3.getTranslatedText();
+//
+//                            getActivity().runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    witness_txt.setText(translatedText3);
+//                                }
+//                            });
+//
+//                            textToTranslate4=victim_txt.getText().toString();
+//                            Translation translation4=translate.translate(textToTranslate4,Translate.TranslateOption.targetLanguage(lang));
+//                            translatedText4=translation4.getTranslatedText();
+//
+//                            getActivity().runOnUiThread(new Runnable() {
+//                                @Override
+//                                public void run() {
+//                                    victim_txt.setText(translatedText4);
+//                                }
+//                            });
+//
+//
+//                    } catch (Exception e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//            });
+//            gfgThread.start();
+//
+//        }
+//
+//    }
 
     private void loadfragment(Fragment fragment) {
         FragmentManager fragmentManager=getFragmentManager();

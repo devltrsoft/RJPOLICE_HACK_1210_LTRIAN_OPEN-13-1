@@ -43,7 +43,7 @@ public class EmergencyPage extends Fragment {
     String textToTranslate,textToTranslate1,textToTranslate2,textToTranslate3,textToTranslate4,textToTranslate5,textToTranslate6;
     private String lang,translatedText,translatedText1,translatedText2,translatedText3,translatedText4,translatedText5,translatedText6;
 
-    private String filelang = "language.txt";
+    private String filelang = "language1.txt";
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -64,9 +64,7 @@ public class EmergencyPage extends Fragment {
         cybercrime_txt = view.findViewById(R.id.cybercrime_txt);
         safety_txt=view.findViewById(R.id.disaster_txt);
 
-        checkLamguage();
-
-
+//        checkLamguage();
         ambulance.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {

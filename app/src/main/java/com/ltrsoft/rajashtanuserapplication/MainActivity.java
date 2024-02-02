@@ -33,10 +33,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         NavigationDrawer navigationDrawer=new NavigationDrawer();
         getSupportFragmentManager().beginTransaction().add(R.id.container_mains,navigationDrawer).commit();
-
-
     }
 }

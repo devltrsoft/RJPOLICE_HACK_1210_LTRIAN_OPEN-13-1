@@ -34,16 +34,19 @@ public class SuspectDeo {
     public ArrayList<SuspectClass>list = new ArrayList<>();
     public SuspectClass suspectClass ;
     public String resp;
-    public final static String SUSPECT_URL = "https://rj.ltr-soft.com/public/police_api/data/complaint_suspect_read.php";
+    public final static String GET_ALL_SUSPECT_URL = "https://rj.ltr-soft.com/public/police_api/data/suspect_suspect_read.php";
+//    public final static String GET_ALL_SUSPECT_URL = "https://rj.ltr-soft.com/public/police_api/data/suspect_suspect_read.php";
+    public final static String GET_ONE_SUSPECT = "https://rj.ltr-soft.com/public/police_api/data/c_suspect_id.php";
+    private static String INSERT_URL = "https://rj.ltr-soft.com/public/police_api/data/complaint_suspect_insert.php";
+    private static String  SUSPECT_URL = "https://rj.ltr-soft.com/public/police_api/data/complaint_suspect_insert.php";
 
-    private static String URL = "https://rj.ltr-soft.com/public/police_api/data/complaint_suspect_insert.php";
-    public void createSuspect(SuspectClass suspectClass , Context context , Activity activity, UserCallBack userCallBack){
-        StringRequest stringRequest = new StringRequest(Request.Method.POST, URL,
+
+    public void createSuspect(String complaint_id,SuspectClass suspectClass , Context context , Activity activity, UserCallBack userCallBack){
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, INSERT_URL,
                 new Response.Listener<String>() {
                     @Override
                     public void onResponse(String response) {
                         Log.d("Response", response);
-
                         if (response.contains("success")) {
                             userCallBack.userSuccess(response.toString());
                         } else {
@@ -59,7 +62,8 @@ public class SuspectDeo {
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 Map<String, String> param = new HashMap<>();
-                param.put("complaint_id ", "1");
+//                param.put("complaint_id ", String.valueOf(suspectClass.getCaseid()));
+                param.put("complaint_id ", complaint_id);
                 param.put("complaint_suspect_fname", suspectClass.getFname());
                 param.put("country_id","1");
                 param.put("state_id", "1");
@@ -70,8 +74,8 @@ public class SuspectDeo {
                 param.put("complaint_suspect_mobile_no", suspectClass.getMobile());
                 param.put("complaint_suspect_gender", suspectClass.getGender());
                 param.put("complaint_suspect_adhar", suspectClass.getAdharno());
-                param.put("complaint_suspect_photo", suspectClass.getPhotourl());
-                param.put("complaint_suspect_address",suspectClass.getPhotourl());
+//                param.put("complaint_suspect_photo", suspectClass.getPhotourl());
+//                param.put("complaint_suspect_address",suspectClass.get());
                 UserDataAccess userDataAccess  = new UserDataAccess();
                 param.put("user_id", userDataAccess.getUserId(activity));
                 return param;
@@ -80,126 +84,125 @@ public class SuspectDeo {
         RequestQueue requestQueue = Volley.newRequestQueue(context);
         requestQueue.add(stringRequest);
     }
-    public void getAllSuspect(String complaintId, Context context,UserCallBack userCallBack){
+    public void getAllSuspect(String complaint_id, Context context,UserCallBack userCallBack){
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
-                Request.Method.GET, SUSPECT_URL, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, GET_ALL_SUSPECT_URL, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                System.out.println("response "+response.toString());
+                if (!response.isEmpty()&&response.length()>1) {
+                    try {
+                        JSONArray jsonArray = new JSONArray(response);
+                        for (int i = 0; i < jsonArray.length(); i++) {
+                            JSONObject jsonObject = jsonArray.getJSONObject(i);
+                            String complaint_suspect_fname = jsonObject.getString("complaint_suspect_fname");
+                            String complaint_suspect_mname = jsonObject.getString("complaint_suspect_mname");
+                            String complaint_suspect_lname = jsonObject.getString("complaint_suspect_lname");
+                            String complaint_suspect_gender = jsonObject.getString("complaint_suspect_gender");
+                            String complaint_suspect_mobile_no = jsonObject.getString("complaint_suspect_mobile_no");
+                            String complaint_suspect_email = jsonObject.getString("complaint_suspect_email");
+                            String complaint_suspect_adhar = jsonObject.getString("complaint_suspect_adhar");
+                            String country_name = jsonObject.getString("country_name");
+                            String city_name = jsonObject.getString("city_name");
+                            String state_name = jsonObject.getString("state_name");
+                            String district_name = jsonObject.getString("district_name");
+                            String complaint_suspect_dob = jsonObject.getString("complaint_suspect_dob");
+                            String isSuspect = jsonObject.getString("is_c_suspect");
+                            String photourl = jsonObject.getString("complaint_suspect_photo_path");
+                            int complaint_suspect_id = jsonObject.getInt("complaint_suspect_id");
+                            int complaint_id = jsonObject.getInt("complaint_id");
 
-                        try {
-                            for (int i = 0; i < response.length(); i++) {
-                                JSONObject jsonObject = response.getJSONObject(i);
-                                String complaint_suspect_fname = jsonObject.getString("complaint_suspect_fname");
-                                String complaint_suspect_mname = jsonObject.getString("complaint_suspect_mname");
-                                String complaint_suspect_lname = jsonObject.getString("complaint_suspect_lname");
-                                String complaint_suspect_gender = jsonObject.getString("complaint_suspect_gender");
-                                String complaint_suspect_mobile_no = jsonObject.getString("complaint_suspect_mobile_no");
-                                String complaint_suspect_email = jsonObject.getString("complaint_suspect_email");
-                                String complaint_suspect_adhar = jsonObject.getString("complaint_suspect_adhar");
-                                String country_name = jsonObject.getString("country_name");
-                                String city_name = jsonObject.getString("city_name");
-                                String state_name = jsonObject.getString("state_name");
-                                String district_name = jsonObject.getString("district_name");
-                                String complaint_suspect_dob = jsonObject.getString("complaint_suspect_dob");
-                                String isSuspect = jsonObject.getString("is_c_suspect");
-                                String photourl = jsonObject.getString("complaint_suspect_photo_path");
-                                int complaint_suspect_id = jsonObject.getInt("complaint_suspect_id");
-                                int complaint_id = jsonObject.getInt("complaint_id");
-
-                                list.add(new SuspectClass(complaint_suspect_fname,complaint_suspect_mname,complaint_suspect_lname,complaint_suspect_dob
-                                        ,complaint_suspect_gender,complaint_suspect_mobile_no,complaint_suspect_email,complaint_suspect_adhar,
-                                        country_name,state_name,district_name,city_name,isSuspect,photourl,complaint_suspect_id,complaint_id));
-                                userCallBack.userSuccess(list);
-                            }
-                        } catch (JSONException e) {
-                            userCallBack.userError(" "+e.toString());
-                            throw new RuntimeException(e);
+                            list.add(new SuspectClass(complaint_suspect_fname, complaint_suspect_mname, complaint_suspect_lname, complaint_suspect_dob
+                                    , complaint_suspect_gender, complaint_suspect_mobile_no, complaint_suspect_email, complaint_suspect_adhar,
+                                    country_name, state_name, district_name, city_name, isSuspect, photourl, complaint_suspect_id, complaint_id));
                         }
+                    } catch (JSONException e) {
+                        userCallBack.userError(" " + e.toString());
+                        throw new RuntimeException(e);
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                       userCallBack.userError(error.toString());
-                        error.printStackTrace();
-                    }
+                    userCallBack.userSuccess(list);
                 }
-        ){
+                else {
+                    list = new ArrayList<>();
+                    userCallBack.userSuccess(list);
+                }
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                userCallBack.userError(error.toString());
+                System.out.println("error "+error.toString());
+                error.printStackTrace();
+            }
+        }){
             @Nullable
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 HashMap hashMap = new HashMap();
-                hashMap.put("complaint_id",complaintId);
+                hashMap.put("complaint_id",complaint_id);
                 return hashMap;
             }
         };
         RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(jsonArrayRequest);
-
+        requestQueue.add(stringRequest);
     }
-    public SuspectClass getSuspect(String evidenceId, Context context){
+    public void getSuspect(String suspectId, Context context,UserCallBack callBack){
+        StringRequest stringRequest = new StringRequest(Request.Method.POST, GET_ONE_SUSPECT, new Response.Listener<String>() {
+            @Override
+            public void onResponse(String response) {
+                try {
+                    JSONArray jsonArray = new JSONArray(response);
+                    for (int i = 0; i < jsonArray.length(); i++) {
+                        JSONObject jsonObject = jsonArray.getJSONObject(i);
+                        String complaint_suspect_fname = jsonObject.getString("complaint_suspect_fname");
+                        String complaint_suspect_mname = jsonObject.getString("complaint_suspect_mname");
+                        String complaint_suspect_lname = jsonObject.getString("complaint_suspect_lname");
+                        String complaint_suspect_gender = jsonObject.getString("complaint_suspect_gender");
+                        String complaint_suspect_mobile_no = jsonObject.getString("complaint_suspect_mobile_no");
+                        String complaint_suspect_email = jsonObject.getString("complaint_suspect_email");
+                        String complaint_suspect_adhar = jsonObject.getString("complaint_suspect_adhar");
+                        String country_name = jsonObject.getString("country_name");
+                        String city_name = jsonObject.getString("city_name");
+                        String state_name = jsonObject.getString("state_name");
+                        String district_name = jsonObject.getString("district_name");
+                        String complaint_suspect_dob = jsonObject.getString("complaint_suspect_dob");
+                        String isSuspect = jsonObject.getString("is_c_suspect");
+                        String photourl = jsonObject.getString("complaint_suspect_photo_path");
+                        int complaint_suspect_id = jsonObject.getInt("complaint_suspect_id");
+                        int complaint_id = jsonObject.getInt("complaint_id");
 
-        JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(
-                Request.Method.GET, SUSPECT_URL, null,
-                new Response.Listener<JSONArray>() {
-                    @Override
-                    public void onResponse(JSONArray response) {
-                        try {
-                            JSONArray jsonArray = new JSONArray(response);
-                            for (int i = 0; i < jsonArray.length(); i++) {
-                                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                                String complaint_suspect_fname = jsonObject.getString("complaint_suspect_fname");
-                                String complaint_suspect_mname = jsonObject.getString("complaint_suspect_mname");
-                                String complaint_suspect_lname = jsonObject.getString("complaint_suspect_lname");
-                                String complaint_suspect_gender = jsonObject.getString("complaint_suspect_gender");
-                                String complaint_suspect_mobile_no = jsonObject.getString("complaint_suspect_mobile_no");
-                                String complaint_suspect_email = jsonObject.getString("complaint_suspect_email");
-                                String complaint_suspect_adhar = jsonObject.getString("complaint_suspect_adhar");
-                                String country_name = jsonObject.getString("country_name");
-                                String city_name = jsonObject.getString("city_name");
-                                String state_name = jsonObject.getString("state_name");
-                                String district_name = jsonObject.getString("district_name");
-                                String complaint_suspect_dob = jsonObject.getString("complaint_suspect_dob");
-                                String isSuspect = jsonObject.getString("is_c_suspect");
-                                String photourl = jsonObject.getString("complaint_suspect_photo_path");
-                                int complaint_suspect_id = jsonObject.getInt("complaint_suspect_id");
-                                int complaint_id = jsonObject.getInt("complaint_id");
-
-                                list.add(new SuspectClass(complaint_suspect_fname,complaint_suspect_mname,complaint_suspect_lname,complaint_suspect_dob
-                                        ,complaint_suspect_gender,complaint_suspect_mobile_no,complaint_suspect_email,complaint_suspect_adhar,
-                                        country_name,state_name,district_name,city_name,isSuspect,photourl,complaint_suspect_id,complaint_id));
-                            }
-                        } catch (JSONException e) {
-                            Log.d("json error",e.toString());
-                            throw new RuntimeException(e);
-                        }
+                        list.add(new SuspectClass(complaint_suspect_fname,complaint_suspect_mname,complaint_suspect_lname,complaint_suspect_dob
+                                ,complaint_suspect_gender,complaint_suspect_mobile_no,complaint_suspect_email,complaint_suspect_adhar,
+                                country_name,state_name,district_name,city_name,isSuspect,photourl,complaint_suspect_id,complaint_id));
                     }
-                },
-                new Response.ErrorListener() {
-                    @Override
-                    public void onErrorResponse(VolleyError error) {
-                        // Handle error
-                        error.printStackTrace();
-                    }
+                } catch (JSONException e) {
+                    callBack.userError(e.toString());
+                    throw new RuntimeException(e);
                 }
-        ){
+                callBack.userSuccess(list);
+            }
+        }, new Response.ErrorListener() {
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                    callBack.userError(error.toString());
+            }
+        }){
             @Nullable
             @Override
             protected Map<String, String> getParams() throws AuthFailureError {
                 HashMap hashMap = new HashMap();
-                hashMap.put("complaint_id",evidenceId);
+                hashMap.put("complaint_suspect_id",suspectId);
                 return hashMap;
             }
         };
+
         RequestQueue requestQueue = Volley.newRequestQueue(context);
-        requestQueue.add(jsonArrayRequest);
-        return suspectClass;
+        requestQueue.add(stringRequest);
 
     }
 
     public String DeleteSuspect(String evidenceId , Context context){
+
         StringRequest stringRequest = new StringRequest(Request.Method.POST, SUSPECT_URL, new Response.Listener<String>() {
             @Override
             public void onResponse(String response) {

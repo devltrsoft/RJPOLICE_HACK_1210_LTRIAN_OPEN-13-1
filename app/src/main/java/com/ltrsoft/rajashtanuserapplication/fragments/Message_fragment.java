@@ -109,6 +109,10 @@ public class Message_fragment extends Fragment {
         } catch (JSONException e) {
             e.printStackTrace();
         }
+
+        OkHttpClient client = new OkHttpClient.Builder()
+                .hostnameVerifier((hostname, session) -> true).build();
+
         RequestBody body = RequestBody.create(jsonBody.toString(), JSON);
         Request request = new Request.Builder()
                 .url("https://api.openai.com/v1/completions")
@@ -136,6 +140,7 @@ public class Message_fragment extends Fragment {
                     }
 
                 } else {
+                    System.out.println("error"+response.body());
                     addResponse("Failed to load response due to " + response.body().toString());
                 }
             }

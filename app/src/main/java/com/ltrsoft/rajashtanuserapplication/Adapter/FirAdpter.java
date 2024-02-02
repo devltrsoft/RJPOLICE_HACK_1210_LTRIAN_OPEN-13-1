@@ -42,30 +42,18 @@ public class FirAdpter extends RecyclerView.Adapter<FirAdpter.ViewHolder> {
             holder.icomplain_name.setText(abc.getComplaint_subject());
             holder.status.setText(abc.getStatus_name());
             holder.category.setText(abc.getComplaintORfir_name());
-
         holder.investigation_card.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AppCompatActivity activity=(AppCompatActivity)v.getContext();
                 Fir_History_Detail fh=new Fir_History_Detail();
-
                 Bundle bundle = new Bundle();
-
                 bundle.putString("fired",abc.getFir_id());
-                bundle.putString("suspect",abc.getSuspect_fname()+abc.getSuspect_mname()+abc.getSuspect_lname());
-                bundle.putString("complain_name",abc.getComplaint_subject());
-                bundle.putString("complaintORfir_name",abc.getComplaintORfir_name());
-                bundle.putString("status_name",abc.getStatus_name());
-                bundle.putString("suspect_address",abc.getSuspect_address());
-                bundle.putString("investigation_witness_fname",abc.getInvestigation_witness_fname());
-                bundle.putString("victim_fname",abc.getVictim_fname());
-                bundle.putString("suspect_fname",abc.getSuspect_fname());
                 fh.setArguments(bundle);
                activity.getSupportFragmentManager().beginTransaction().replace(R.id.containermain,fh).addToBackStack(null).commit();
             }
         });
     }
-
     @Override
     public int getItemCount() {return list.size();    }
 

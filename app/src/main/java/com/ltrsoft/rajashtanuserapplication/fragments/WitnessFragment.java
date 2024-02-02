@@ -5,7 +5,10 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.SearchView;
+import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -23,8 +26,10 @@ import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
 import com.ltrsoft.rajashtanuserapplication.Adapter.WitnessAdapter;
 import com.ltrsoft.rajashtanuserapplication.R;
+import com.ltrsoft.rajashtanuserapplication.classes.ComplaintClass;
 import com.ltrsoft.rajashtanuserapplication.classes.WitnessClass;
 import com.ltrsoft.rajashtanuserapplication.interfaces.UserCallBack;
+import com.ltrsoft.rajashtanuserapplication.model.Complaintdeo;
 import com.ltrsoft.rajashtanuserapplication.model.Witnessdeo;
 import com.ltrsoft.rajashtanuserapplication.utils.UserDataAccess;
 
@@ -33,6 +38,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 
 public class WitnessFragment extends Fragment {
@@ -41,11 +47,11 @@ public class WitnessFragment extends Fragment {
     TextView t;
     WitnessAdapter myAdapter;
     ArrayList<WitnessClass> witnessList;
-    WitnessClass modelWitness;
-    LinearLayoutManager manager;
-    String date;
-    String time;
-    StringBuilder complainId = new StringBuilder();
+    public TextView textView;
+    public Spinner complaints;
+    public ArrayList<String>listcomplain= new ArrayList<>();
+    public ArrayAdapter adapter1 ;
+    HashMap<Integer ,String> map = new HashMap<>();
     String url = "https://rj.ltr-soft.com/public/police_api/data/complaint_witness_read.php"; // Change the URL
 
     public WitnessFragment() {
@@ -58,87 +64,97 @@ public class WitnessFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_witness_page, container, false); // Change to your witness fragment layout
         recyclerView = v.findViewById(R.id.wrecycle);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
-//        try {
-//            FileInputStream fileInputStream = requireContext().openFileInput("complain.txt");
-//            InputStreamReader inputReader = new InputStreamReader(fileInputStream);
-//            char[] buffer = new char[1024];
-//            int read;
-//            while ((read = inputReader.read(buffer)) > 0) {
-//                complainId.append(buffer, 0, read);
-//            }
-//
-//          //  Toast.makeText(getContext(), "Complaint ID: " + complainId.toString(), Toast.LENGTH_SHORT).show();
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//         //   Toast.makeText(getContext(), "Error reading Complaint ID", Toast.LENGTH_SHORT).show();
-//            Log.d("FIE ERROR ",e.toString());
-//        }
-//        StringRequest request = new StringRequest(Request.Method.POST, url, new Response.Listener<String>() {
-//            @Override
-//            public void onResponse(String response) {
-//                try {
-//                    JSONArray json = new JSONArray(response);
-//                    for (int i = 0; i < json.length(); i++) {
-//                        JSONObject jsonObject = json.getJSONObject(i);
-//                        String complaint_witness_fname = jsonObject.getString("complaint_witness_fname");
-//                        String complaint_witness_mname = jsonObject.getString("complaint_witness_mname");
-//                        String complaint_witness_lname = jsonObject.getString("complaint_witness_fname");
-//                        String complaint_witness_dob = jsonObject.getString("complaint_witness_dob");
-//                        String complaint_witness_gender=jsonObject.getString("complaint_witness_gender");
-//                        String complaint_witness_mobile=jsonObject.getString("complaint_witness_mobile");
-//                        String complaint_witness_address=jsonObject.getString("complaint_witness_address");
-//                        String complaint_witness_email=jsonObject.getString("complaint_witness_email");
-//                        String complaint_witness_photo_path=jsonObject.getString("complaint_witness_photo_path");
-//                        String complaint_witness_adhar=jsonObject.getString("complaint_witness_adhar");
-//
-//                        String country_name=jsonObject.getString("country_name");
-//                        String state_name=jsonObject.getString("state_name");
-//                        String district_name=jsonObject.getString("district_name");
-//                        String city_name=jsonObject.getString("city_name");
-//
-//                        complaint_witness_photo_path = "https://rj.ltr-soft.com/public/police_api/inputfiles/abc.jpg" + complaint_witness_photo_path;
-//
-//                        witnessList.add(new WitnessClass(complaint_witness_fname,complaint_witness_mname,complaint_witness_lname,
-//                                complaint_witness_address,city_name,country_name,state_name,district_name,complaint_witness_dob
-//                        ,complaint_witness_gender,complaint_witness_mobile,complaint_witness_email,complaint_witness_photo_path
-//                        ,complaint_witness_adhar));
-//                    }
-//                    myAdapter.notifyDataSetChanged();
-//                } catch (JSONException e) {
-//                    e.printStackTrace();
-//                }
-//            }
-//        }, new Response.ErrorListener() {
-//            @Override
-//            public void onErrorResponse(VolleyError error) {
-//                Toast.makeText(getContext(), "error: " + error, Toast.LENGTH_SHORT).show();
-//            }
-//        });
-//
-//        RequestQueue queue = Volley.newRequestQueue(getContext());
-//        queue.add(request);
+        textView = v.findViewById(R.id.vtv);
+        complaints = v.findViewById(R.id.vcspin);
 
-
-        Witnessdeo witnessdeo = new Witnessdeo();
         UserDataAccess access = new UserDataAccess();
-        witnessdeo.getAllWitness(access.getUserId(getActivity()), getContext(), new UserCallBack() {
+        Complaintdeo complaintdeo = new Complaintdeo();
+        try {
+            complaintdeo.getUserAllComplaint(access.getUserId(getActivity()), getContext(), new UserCallBack() {
+                @Override
+                public void userSuccess(Object object) {
+                    ArrayList <ComplaintClass>list = (ArrayList<ComplaintClass>) object;
+                    if (!list.isEmpty()) {
+                        for (int i = 0; i < list.size(); i++) {
+                            ComplaintClass complaintClass = list.get(i);
+                            listcomplain.add(complaintClass.getComplaint_subject());
+                            map.put(i, complaintClass.getComplaint_id());
+                        }
+                        adapter1 = new ArrayAdapter(getContext(), android.R.layout.simple_expandable_list_item_1, listcomplain);
+                        adapter1.setDropDownViewResource(android.R.layout.simple_expandable_list_item_1);
+                        complaints.setAdapter(adapter1);
+                    }
+                    else {
+                        showNoComplaint();
+                    }
+                }
+                @Override
+                public void userError(String error) {
+                    Toast.makeText(getContext(), "error "+error.toString(), Toast.LENGTH_SHORT).show();
+                    showError("complaint "+error.toString());
+                }
+            });
+        } catch (JSONException e) {
+            Toast.makeText(getContext(), "error "+e.toString(), Toast.LENGTH_SHORT).show();
+            showError("complaint "+e.toString());
+            throw new RuntimeException(e);
+        }
+
+        complaints.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void userSuccess(Object object) {
-                Toast.makeText(getContext(), "", Toast.LENGTH_SHORT).show();
-                witnessList = (ArrayList<WitnessClass>)object;
-                myAdapter = new WitnessAdapter(witnessList); // Change to WitnessAdapter
-                LinearLayoutManager layoutManager  = new LinearLayoutManager(getContext());
-                recyclerView.setLayoutManager(layoutManager);
-                recyclerView.setAdapter(myAdapter);
+            public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+                String complain_id = map.get(i);
+                loadVictims(complain_id);
             }
             @Override
-            public void userError(String error) {
-                System.out.println("error"+error.toString());
-                Toast.makeText(getContext(), "error"+error.toString(), Toast.LENGTH_SHORT).show();
+            public void onNothingSelected(AdapterView<?> adapterView) {
+                if (!map.isEmpty()){
+                loadVictims(map.get(0));
+                }
             }
         });
 
-
         return v;
+    }
+    private void loadVictims(String s) {
+        Witnessdeo witnessdeo = new Witnessdeo();
+        witnessdeo.getAllWitness(s, getContext(), new UserCallBack() {
+            @Override
+            public void userSuccess(Object object) {
+                witnessList = (ArrayList<WitnessClass>)object;
+                if (!witnessList.isEmpty()) {
+                    myAdapter = new WitnessAdapter(witnessList); // Change to WitnessAdapter
+                    LinearLayoutManager layoutManager = new LinearLayoutManager(getContext());
+                    recyclerView.setLayoutManager(layoutManager);
+                    recyclerView.setAdapter(myAdapter);
+                }
+                else {
+                    showNoVictim();
+                }
+            }
+            @Override
+            public void userError(String error) {
+                Toast.makeText(getContext(), "error"+error.toString(), Toast.LENGTH_SHORT).show();
+                showError("witness "+error.toString());
+            }
+        });
+    }
+    private void showNoComplaint() {
+        recyclerView.setVisibility(View.GONE);
+        complaints.setVisibility(View.GONE);
+        textView.setVisibility(View.VISIBLE);
+        textView.setText("You have no complaints register");
+    }
+    private void showNoVictim() {
+        recyclerView.setVisibility(View.GONE);
+        complaints.setVisibility(View.VISIBLE);
+        textView.setVisibility(View.VISIBLE);
+        textView.setText("This complaint have no suspect");
+    }
+    private void showError(String s){
+        recyclerView.setVisibility(View.GONE);
+        complaints.setVisibility(View.GONE);
+        textView.setVisibility(View.VISIBLE);
+        textView.setText("somthng error while loading "+s.toString());
     }
 }

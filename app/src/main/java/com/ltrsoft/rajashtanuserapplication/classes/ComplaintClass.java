@@ -6,10 +6,45 @@ public class ComplaintClass {
             investigation_witness_fname,investigation_witness_mname,complaintORfir_name,investigation_witness_lname,
             investigation_witness_address,investigation_witness_dob,investigation_witness_gender,
             investigation_witness_mobile,investigation_witness_photo,victim_fname,victim_mname,victim_lname,
-             victim_address,victim_gender,victim_mobile_no,victim_photo;
+             victim_address,victim_gender,victim_mobile_no,victim_photo,complaint_type_id;
+    private String complaint_id,complaint_subject,complaint_description,incident_date,complaint_location,user_address,cmpid;
+
+    public ComplaintClass(String complaint_against, String station_id, String latitude, String longitude, String complaint_subject, String complaint_description,
+                          String incident_date,  String user_address,String userid,String complaint_type_id,String sample) {
+        this.complaint_against = complaint_against;
+        this.station_id = station_id;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.complaint_subject = complaint_subject;
+        this.complaint_description = complaint_description;
+        this.incident_date = incident_date;
+        this.user_address = user_address;
+        this.user_id = userid;
+        this.complaint_type_id = complaint_type_id;
+    }
+    public ComplaintClass(String complaint_type_name, String status_name, String complaint_against, String complaint_id, String complaint_subject, String complaint_description, String incident_date, String complaint_location, String user_address, String cmpid) {
+        this.complaint_type_name = complaint_type_name;
+        this.status_name = status_name;
+        this.complaint_against = complaint_against;
+        this.complaint_id = complaint_id;
+        this.complaint_subject = complaint_subject;
+        this.complaint_description = complaint_description;
+        this.incident_date = incident_date;
+        this.complaint_location = complaint_location;
+        this.user_address = user_address;
+        this.cmpid = cmpid;
+    }
 
     public String getFir_id() {
         return fir_id;
+    }
+
+    public String getCmpid() {
+        return cmpid;
+    }
+
+    public void setCmpid(String cmpid) {
+        this.cmpid = cmpid;
     }
 
     public void setFir_id(String fir_id) {
@@ -255,66 +290,6 @@ public class ComplaintClass {
     public void setVictim_photo(String victim_photo) {
         this.victim_photo = victim_photo;
     }
-
-//    public ComplaintClass(String fir_id, String complaint_type_name, String complaintdescription, String status_name, String complaint_against, String station_id, String user_id, String latitude, String longitude, String suspect_fname, String suspect_mname, String suspect_lname, String suspect_address, String suspect_gender, String suspect_mobile_no, String suspect_photo, String investigation_witness_fname, String investigation_witness_mname, String complaintORfir_name, String investigation_witness_lname, String investigation_witness_address, String investigation_witness_dob, String investigation_witness_gender, String investigation_witness_mobile, String investigation_witness_photo, String victim_fname, String victim_mname, String victim_lname, String victim_address, String victim_gender, String victim_mobile_no, String victim_photo, String complaint_id, String complaint_subject, String complaint_description, String incident_date, String complaint_location, String user_address) {
-//        this.fir_id = fir_id;
-//        this.complaint_type_name = complaint_type_name;
-//        this.complaintdescription = complaintdescription;
-//        this.status_name = status_name;
-//        this.complaint_against = complaint_against;
-//        this.station_id = station_id;
-//        this.user_id = user_id;
-//        this.latitude = latitude;
-//        this.longitude = longitude;
-//        this.suspect_fname = suspect_fname;
-//        this.suspect_mname = suspect_mname;
-//        this.suspect_lname = suspect_lname;
-//        this.suspect_address = suspect_address;
-//        this.suspect_gender = suspect_gender;
-//        this.suspect_mobile_no = suspect_mobile_no;
-//        this.suspect_photo = suspect_photo;
-//        this.investigation_witness_fname = investigation_witness_fname;
-//        this.investigation_witness_mname = investigation_witness_mname;
-//        this.complaintORfir_name = complaintORfir_name;
-//        this.investigation_witness_lname = investigation_witness_lname;
-//        this.investigation_witness_address = investigation_witness_address;
-//        this.investigation_witness_dob = investigation_witness_dob;
-//        this.investigation_witness_gender = investigation_witness_gender;
-//        this.investigation_witness_mobile = investigation_witness_mobile;
-//        this.investigation_witness_photo = investigation_witness_photo;
-//        this.victim_fname = victim_fname;
-//        this.victim_mname = victim_mname;
-//        this.victim_lname = victim_lname;
-//        this.victim_address = victim_address;
-//        this.victim_gender = victim_gender;
-//        this.victim_mobile_no = victim_mobile_no;
-//        this.victim_photo = victim_photo;
-//        this.complaint_id = complaint_id;
-//        this.complaint_subject = complaint_subject;
-//        this.complaint_description = complaint_description;
-//        this.incident_date = incident_date;
-//        this.complaint_location = complaint_location;
-//        this.user_address = user_address;
-//    }
-
-    private String complaint_id,complaint_subject,complaint_description,incident_date,complaint_location,user_address;
-
-    public ComplaintClass( String complaint_subject, String complaint_description,
-                          String incident_date, String complaint_location, String user_address,String complaint_against
-    ,String userid,String complaint_type_name) {
-
-        this.complaint_subject = complaint_subject;
-        this.complaint_description = complaint_description;
-        this.incident_date = incident_date;
-        this.complaint_against = complaint_against;
-        this.complaint_location = complaint_location;
-        this.user_address = user_address;
-        this.user_id = userid;
-        this.complaint_type_name=complaint_type_name;
-    }
-//    public ComplaintClass() {
-//
-//    }
 
     public String getComplaint_id() {
         return complaint_id;

@@ -31,6 +31,11 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.ltrsoft.rajashtanuserapplication.R;
+import com.ltrsoft.rajashtanuserapplication.classes.ComplaintClass;
+import com.ltrsoft.rajashtanuserapplication.interfaces.UserCallBack;
+import com.ltrsoft.rajashtanuserapplication.model.Complaintdeo;
+
+import org.json.JSONException;
 
 import java.io.FileOutputStream;
 
@@ -72,15 +77,13 @@ public class ComplaintDetailFragment extends Fragment {
 
 
         Bundle bundle = getArguments();
-        t1.setText(bundle.getString("complain_name"));
-        t2.setText(bundle.getString("crime_type"));
-        t3.setText(bundle.getString("cid"));
-        t4.setText(bundle.getString("description"));
-        t5.setText(bundle.getString("place"));
-        t6.setText(bundle.getString("complain_name"));
-        t7.setText(bundle.getString("place"));
-        t8.setText(bundle.getString("description"));
+       String complain_id = bundle.getString("complain_id");
 
+        try {
+            loadData(complain_id);
+        } catch (JSONException e) {
+            throw new RuntimeException(e);
+        }
 
         button.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -93,7 +96,27 @@ public class ComplaintDetailFragment extends Fragment {
 
         return view;
     }
-
+    private void loadData(String complainId) throws JSONException {
+        Complaintdeo complaintdeo = new Complaintdeo();
+        complaintdeo.getUserComplain(complainId, getContext(), new UserCallBack() {
+            @Override
+            public void userSuccess(Object object) {
+                ComplaintClass complaintClass = (ComplaintClass) object;
+                t1.setText(complaintClass.getComplaint_id());
+                t2.setText(complaintClass.getComplaint_type_name());
+                t3.setText(complaintClass.getIncident_date());
+                t4.setText(complaintClass.getUser_address());
+                t5.setText(complaintClass.getComplaint_subject());
+                t6.setText(complaintClass.getComplaint_location());
+                t7.setText(complaintClass.getStatus_name());
+                t8.setText(complaintClass.getComplaint_type_name());
+            }
+            @Override
+            public void userError(String error) {
+                Toast.makeText(getContext(), "error"+error.toString(), Toast.LENGTH_SHORT).show();
+            }
+        });
+    }
     private void createPdf() {
         Document document = new Document();
 
@@ -130,49 +153,4 @@ public class ComplaintDetailFragment extends Fragment {
         }
 
     }
-//    private void sendNotification(String string) {
-//        Bitmap largeIcon =getBitMap(ResourcesCompat.getDrawable(getResources(),R.drawable.complaint,null));
-//        Notification.BigPictureStyle bigPictureStyle = new Notification.BigPictureStyle()
-//                .bigPicture(largeIcon)
-//                .bigLargeIcon(largeIcon)
-//                .setSummaryText("File created  ")
-//                .setBigContentTitle("Pdf craeted");
-//
-//
-//        NotificationManager nm = (NotificationManager) getActivity().getSystemService(NOTIFICATION_SERVICE);
-//        Notification notification;
-//        Intent intent = new Intent(Intent.ACTION_VIEW);
-//        intent.setDataAndType(Uri.parse(string), "application/pdf");
-//        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-//        PendingIntent pi = PendingIntent.getActivity(getContext(),REQUESTCODE,intent,PendingIntent.FLAG_UPDATE_CURRENT| PendingIntent.FLAG_IMMUTABLE);
-//
-//        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-//            nm.createNotificationChannel(new NotificationChannel(CHANNELID,"my channel",NotificationManager.IMPORTANCE_HIGH));
-//            notification = new Notification.Builder(getContext())
-//                    .setContentText("new messege ")
-//                    .setStyle(bigPictureStyle)
-//                    .setContentIntent(pi)
-//                    .setSubText("new messege from ")
-//                    .setChannelId(CHANNELID)
-//                    .build();
-//            nm.notify(NOTIFICATIONID,notification);
-//        }
-//        else {
-//            notification = new Notification.Builder(getContext())
-//                    .setSmallIcon(R.mipmap.images)
-//                    .setContentText("new messege ")
-//                    .setContentIntent(pi)
-//                    .setStyle(bigPictureStyle)
-//                    .setSubText("new messege from ")
-//                    .build();
-//            nm.notify(NOTIFICATIONID,notification);
-//        }
-//    }
-//
-//    public Bitmap getBitMap(Drawable drawable){
-//        BitmapDrawable bitmapDrawable = (BitmapDrawable)drawable;
-//        Bitmap largeIcon = bitmapDrawable.getBitmap();
-//        return largeIcon;
-//    }
-
 }

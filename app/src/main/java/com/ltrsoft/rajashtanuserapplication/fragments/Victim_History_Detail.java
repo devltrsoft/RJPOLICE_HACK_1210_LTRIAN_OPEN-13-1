@@ -19,6 +19,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.appcompat.app.ActionBar;
 import androidx.appcompat.app.AppCompatActivity;
@@ -29,25 +30,25 @@ import com.itextpdf.text.Document;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
 import com.ltrsoft.rajashtanuserapplication.R;
+import com.ltrsoft.rajashtanuserapplication.classes.VictimClass;
+import com.ltrsoft.rajashtanuserapplication.interfaces.UserCallBack;
+import com.ltrsoft.rajashtanuserapplication.model.Victimdeo;
+import com.ltrsoft.rajashtanuserapplication.utils.UserDataAccess;
 
 import java.io.FileOutputStream;
+import java.util.ArrayList;
 
 public class Victim_History_Detail extends Fragment {
     private static final int REQUESTCODE =10000 ;
     private static final String CHANNELID = "20000";
     private static final int NOTIFICATIONID =3000 ;
-
     private TextView full_name,suspect_addhar,Suspect_full_name,suspect_address,suspect_dob,suspect_gender,suspect_mobile
             ,suspect_email,suspect_country,suspect_state,suspect_district,suspect_city;
-
     Button button;
 
     public Victim_History_Detail() {
         // Required empty public constructor
     }
-
-
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -69,15 +70,31 @@ public class Victim_History_Detail extends Fragment {
 
         button=view.findViewById(R.id.downloadButton);
 
-        full_name.setText(bundle.getString("complaint_victim_fname"+bundle.getString("complaint_victim_mname")+bundle.getString("complaint_victim_lname")));
-        suspect_addhar.setText(bundle.getString("aadhar"));
-        suspect_dob.setText(bundle.getString("dob"));
-        suspect_gender.setText(bundle.getString("gender"));
-        suspect_mobile.setText(bundle.getString("mobile"));
-        suspect_country.setText(bundle.getString("country_name"));
-        suspect_state.setText(bundle.getString("state_name"));
-        suspect_city.setText(bundle.getString("city_name"));
-        suspect_district.setText(bundle.getString("district_name"));
+        Victimdeo victimdeo = new Victimdeo();
+//        Toast.makeText(getContext(), "victim id = "+bundle.getString("cmp_id"), Toast.LENGTH_SHORT).show();
+        victimdeo.getVictim(bundle.getString("cmp_id") , getContext(), new UserCallBack() {
+            @Override
+            public void userSuccess(Object object) {
+//                Toast.makeText(getContext(), ""+(String)object , Toast.LENGTH_SHORT).show();
+                ArrayList<VictimClass>list = (ArrayList<VictimClass>) object;
+                VictimClass victimClass = list.get(0);
+                full_name.setText(victimClass.getComplaint_victim_fname()+" "+victimClass.getComplaint_victim_mname()+" "+victimClass.getComplaint_victim_lname());
+                suspect_addhar.setText(victimClass.getAadhar());
+                suspect_dob.setText(victimClass.getDob());
+                suspect_gender.setText(victimClass.getGender());
+                suspect_mobile.setText(victimClass.getMobile());
+                suspect_country.setText(victimClass.getCountry_name());
+                suspect_state.setText(victimClass.getState_name());
+                suspect_city.setText(victimClass.getCity_name());
+                suspect_district.setText(victimClass.getDistrict_name());
+            }
+            @Override
+            public void userError(String error) {
+                Toast.makeText(getContext(), "", Toast.LENGTH_SHORT).show();
+            }
+        });
+
+//        full_name.setText(bundle.getString("complaint_victim_fname"+bundle.getString("complaint_victim_mname")+bundle.getString("complaint_victim_lname")));
 
         ActionBar actionBar = ((AppCompatActivity) requireActivity()).getSupportActionBar();
 

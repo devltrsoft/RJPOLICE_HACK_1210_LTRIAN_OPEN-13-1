@@ -39,9 +39,12 @@ public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.View
     @Override
     public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
         ComplaintClass invstclass = list.get(position);
-            holder.firno.setText(invstclass.getComplaint_id());
+        if (!list.isEmpty()) {
+            System.out.println(invstclass.toString() + invstclass.getComplaint_subject());
+        }
+            holder.firno.setText(invstclass.getCmpid());
             holder.icrime_type.setText(invstclass.getComplaint_type_name());
-            holder.icomplain_name.setText(invstclass.getComplaint_subject());
+            holder.icomplain_name.setText(invstclass.getComplaint_subject()+invstclass.getComplaint_description());
             holder.status.setText(invstclass.getStatus_name());
             holder.category.setText(invstclass.getComplaintORfir_name());
 
@@ -51,11 +54,12 @@ public class ComplaintAdapter extends RecyclerView.Adapter<ComplaintAdapter.View
                 ComplaintDetailFragment cn=new ComplaintDetailFragment();
                 AppCompatActivity activity=(AppCompatActivity)v.getContext();
                Bundle bundle = new Bundle();
-                bundle.putString("complain_name", invstclass.getComplaint_subject());
-                bundle.putString("crime_type", invstclass.getUser_address());
-                bundle.putString("cid",invstclass.getComplaint_id());
-                bundle.putString("description",invstclass.getComplaint_description());
-                bundle.putString("place",invstclass.getStatus_name());
+                bundle.putString("complain_id", invstclass.getComplaint_id());
+//                bundle.putString("complain_name", invstclass.getComplaint_subject());
+//                bundle.putString("crime_type", invstclass.getUser_address());
+//                bundle.putString("cid",invstclass.getComplaint_id());
+//                bundle.putString("description",invstclass.getComplaint_description());
+//                bundle.putString("place",invstclass.getStatus_name());
                  cn.setArguments(bundle);
 
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.containermain, cn

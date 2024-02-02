@@ -28,7 +28,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class Newsdeo {
-    String URLLL="https://rj.ltr-soft.com/public/police_api/news/select_news.php";
+//    String URLLL="https://rj.ltr-soft.com/public/police_api/news/select_news.php";
+    String URLLL="https://rj.ltr-soft.com/public/police_api/news/last_news.php";
     public News news ;
     public ArrayList<News>list=new ArrayList<>();
 
@@ -43,8 +44,8 @@ public class Newsdeo {
                         String news_title = jsonObject.getString("news_title");
                         String news_description = jsonObject.getString("news_description");
                         String news_date = jsonObject.getString("news_date");
-                        String news_category_name = jsonObject.getString("news_category_name");
-                        String news_photo_path = jsonObject.getString("news_photo_path"); // Assuming this is the photo path
+                        String news_category_name = jsonObject.getString("created_at");
+                        String news_photo_path = "" ;// Assuming this is the photo path
 
                        list.add(new News(news_title, news_description, news_date, news_category_name, news_photo_path));
                     } catch (JSONException e) {
